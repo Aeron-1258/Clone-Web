@@ -380,11 +380,6 @@
   .story-img-frame {
     height: 280px;
   }
-
-  .routes-preview-inner {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
 }
 
 /* Tablet adjustments (769px to 1024px) */
