@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 84" fill="none">
+  <!-- Official Kochi Water Metro Symbol: Interlocking Teal & Blue Waves -->
+  <!-- Teal Wave: Left vertical down to corner, up-right to peak 1, down-right to end -->
+  <path d="M 14 11 V 50 L 59 11 L 104 53" stroke="#00a89d" stroke-width="16.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Blue Wave: Starts under peak 1, down to trough, up-right to peak 2, down-right to bottom-right -->
+  <path d="M 44 41 L 59 55 L 104 11 L 149 50" stroke="#0074c9" stroke-width="16.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

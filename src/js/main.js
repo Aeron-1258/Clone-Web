@@ -1,5 +1,6 @@
 import { initSplashScreen } from './splash.js';
 import { initNavigation } from './nav.js';
+import { initHeroScroll } from './hero-scroll.js';
 import { initRidershipCounter } from './ridership.js';
 import { initNetworkMap } from './map.js';
 import { initJourneyPlanner, setPlannerOrigin } from './planner.js';
@@ -22,6 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavigation((lang, dict) => {
     applyLanguageTranslations(dict);
   });
+
+  // 2b. Smooth Multi-Platform Hero Scroll Animation
+  initHeroScroll();
 
   // 3. Live Ridership Counter
   initRidershipCounter();
