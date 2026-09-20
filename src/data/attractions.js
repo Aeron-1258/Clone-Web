@@ -1,0 +1,122 @@
+export const ATTRACTIONS = [
+  {
+    id: 'fort-kochi-heritage',
+    name: 'Fort Kochi Heritage',
+    mlName: 'ഫോർട്ട് കൊച്ചി പൈതൃകം',
+    category: 'Heritage & Culture',
+    nearestTerminal: 'Fort Kochi Terminal (2 min walk)',
+    tagline: 'Colonial mansions, art cafés & cobblestone alleys',
+    description: 'Immerse yourself in centuries of Portuguese, Dutch, and British history. Walk beneath rain trees to Vasco da Gama Square, St. Francis Church, and vibrant coastal art cafés.',
+    image: 'https://cdn-dev.watermetro.co.in/explore_01_e1ce727d00.jpg',
+    mapsUrl: 'https://maps.google.com/?q=Fort+Kochi+Beach+Kerala',
+    metroFeeder: 'Direct Water Metro from High Court (20 min scenic cruise)'
+  },
+  {
+    id: 'chinese-fishing-nets',
+    name: 'Chinese Fishing Nets',
+    mlName: 'ചീനവലകൾ',
+    category: 'Iconic Landmark',
+    nearestTerminal: 'Fort Kochi Terminal (3 min walk)',
+    tagline: 'Centuries-old cantilevered shoreline silhouettes',
+    description: 'First introduced by Chinese explorer Zheng He in the 14th century, these monumental bamboo and teak mechanical nets still balance majestically against the setting Arabian sea sun.',
+    image: 'https://cdn-dev.watermetro.co.in/fishing_nets_5f29376c23.jpeg',
+    mapsUrl: 'https://maps.google.com/?q=Chinese+Fishing+Nets+Fort+Kochi',
+    metroFeeder: 'Direct Water Metro from High Court or Vypin'
+  },
+  {
+    id: 'mattancherry-palace',
+    name: 'Mattancherry Dutch Palace',
+    mlName: 'മട്ടാഞ്ചേരി കൊട്ടാരം',
+    category: 'Historical Museum',
+    nearestTerminal: 'Mattancherry Terminal (5 min walk)',
+    tagline: 'Exquisite Ramayana murals & royal coronation halls',
+    description: 'Built by the Portuguese in 1555 and gifted to the Raja of Kochi, then extensively renovated by the Dutch. Houses some of Indias finest mythological wall paintings.',
+    image: 'https://cdn-dev.watermetro.co.in/IMG_0182_394617d98e.jpeg',
+    mapsUrl: 'https://maps.google.com/?q=Mattancherry+Palace+Kochi',
+    metroFeeder: 'Water Metro from High Court or Fort Kochi'
+  },
+  {
+    id: 'jew-town-synagogue',
+    name: 'Jew Town & Paradesi Synagogue',
+    mlName: 'ജൂതത്തെരുവും പരദേശി സിനഗോഗും',
+    category: 'Heritage Bazaar',
+    nearestTerminal: 'Mattancherry Terminal (8 min walk)',
+    tagline: 'Hand-painted willow tiles & aromatic spice emporiums',
+    description: 'Breathe in cardamom, cinnamon, and aged cedar. The 1568 Paradesi Synagogue features hand-painted 18th-century porcelain floor tiles from Canton and crystal chandeliers from Belgium.',
+    image: 'https://cdn-dev.watermetro.co.in/explore_02_663dd7db0c.jpg',
+    mapsUrl: 'https://maps.google.com/?q=Paradesi+Synagogue+Kochi',
+    metroFeeder: 'Feeder Auto or short pedestrian walk from Mattancherry Terminal'
+  },
+  {
+    id: 'marine-drive-rainbow',
+    name: 'Marine Drive & Rainbow Bridge',
+    mlName: 'മറൈൻ ഡ്രൈവ് & റെയിൻബോ പാലം',
+    category: 'Urban Promenade',
+    nearestTerminal: 'High Court Terminal (1 min walk)',
+    tagline: 'Bustling waterfront promenade facing the backwaters',
+    description: 'A tree-lined picturesque walkway along the backwaters overlooking busy ship channels, illuminated by night with the iconic Rainbow Bridge and musical fountains.',
+    image: 'https://cdn-dev.watermetro.co.in/highcourt_station_c3296123d3.jpg',
+    mapsUrl: 'https://maps.google.com/?q=Marine+Drive+Kochi',
+    metroFeeder: 'Adjacent to High Court Terminal; 850m from MG Road Metro'
+  },
+  {
+    id: 'bolgatty-palace',
+    name: 'Bolgatty Palace & Marina',
+    mlName: 'ബോൾഗാട്ടി കൊട്ടാരവും മരീനയും',
+    category: 'Resort & Yachting',
+    nearestTerminal: 'Bolgatty Terminal (2 min walk)',
+    tagline: '1744 Dutch mansion set amidst golf greens and berths',
+    description: 'One of the oldest existing Dutch palaces outside Holland, nestled on Bolgatty Island with international marina berths accommodating yachts cruising the Indian Ocean.',
+    image: 'https://cdn-dev.watermetro.co.in/bolgatty_palace_1f50d39263.jpg',
+    mapsUrl: 'https://maps.google.com/?q=Bolgatty+Palace+and+Island+Resort',
+    metroFeeder: 'Express 8-min Water Metro from High Court'
+  },
+  {
+    id: 'cherai-beach',
+    name: 'Cherai & Kuzhupilly Beach',
+    mlName: 'ചെറായി കടപ്പുറം',
+    category: 'Pristine Coastline',
+    nearestTerminal: 'Vypin Terminal + Island Feeder Bus (18 mins)',
+    tagline: 'Golden sands where backwaters embrace the sea',
+    description: 'Famous for calm waves, swimming dolphins, shallow waters, and seaside shacks serving authentic Kerala Karimeen and tender coconut.',
+    image: 'https://cdn-dev.watermetro.co.in/cherai_9cde26582c.jpg',
+    mapsUrl: 'https://maps.google.com/?q=Cherai+Beach+Kerala',
+    metroFeeder: 'Water Metro from High Court to Vypin + synchronous Feeder E-Bus'
+  },
+  {
+    id: 'kadamakkudy-archipelago',
+    name: 'Kadamakkudy Eco-Archipelago',
+    mlName: 'കടമക്കുടി ദ്വീപുകൾ',
+    category: 'Eco-Tourism',
+    nearestTerminal: 'South Chittoor Terminal (then feeder) or Direct Phase 2',
+    tagline: 'Pristine bio-reserves, migratory birds & mangrove trails',
+    description: 'A cluster of fourteen tranquil islands where fishermen glide in country canoes, sunset casts golden hues over pokkali rice ponds, and white egrets flutter overhead.',
+    image: 'https://cdn-dev.watermetro.co.in/South_chittoor_731b71a136.jpeg',
+    mapsUrl: 'https://maps.google.com/?q=Kadamakkudy+Islands+Kochi',
+    metroFeeder: 'Water Metro to South Chittoor + Eco-Feeder Auto'
+  },
+  {
+    id: 'lulu-mall-edapally',
+    name: 'LuLu International Mall',
+    mlName: 'ലുലു ഇന്റർനാഷണൽ മാൾ',
+    category: 'Shopping & Dining',
+    nearestTerminal: 'Vyttila Terminal + Direct Metro Rail to Edapally (12 mins)',
+    tagline: 'One of Indias premier shopping, ice-skating & culinary hubs',
+    description: 'Over 300 international brands, multiplex cinema, 9-screen food court, and an Olympic-sized ice-skating rink, directly connected to Edapally Metro Station via skywalk.',
+    image: 'https://cdn-dev.watermetro.co.in/lulumall_cochin_f790dc75dd.jpg',
+    mapsUrl: 'https://maps.google.com/?q=Lulu+Mall+Edapally+Kochi',
+    metroFeeder: 'Direct air-conditioned skywalk from Edapally Metro Station'
+  },
+  {
+    id: 'mangalavanam-sanctuary',
+    name: 'Mangalavanam Bird Sanctuary',
+    mlName: 'മംഗളവനം പക്ഷി സങ്കേതം',
+    category: 'Nature & Wildlife',
+    nearestTerminal: 'High Court Terminal (6 min walk)',
+    tagline: 'The "Green Lung of Kochi" sheltering exotic avian species',
+    description: 'An ecologically sensitive mangrove reserve in the heart of Ernakulam, serving as a sanctuary to over 72 species of migratory birds, flying foxes, and coastal flora.',
+    image: 'https://cdn-dev.watermetro.co.in/mangalavanam_e49a02bc67.jpg',
+    mapsUrl: 'https://maps.google.com/?q=Mangalavanam+Bird+Sanctuary+Kochi',
+    metroFeeder: 'Walking distance from High Court Water Metro Terminal'
+  }
+];
