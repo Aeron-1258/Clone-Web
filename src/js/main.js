@@ -76,14 +76,17 @@ function renderTerminalsCarousel() {
   const container = document.getElementById('terminals-carousel-inner');
   if (!container) return;
 
-  container.innerHTML = STATIONS.map(station => `
+  const waterMetroTerminals = STATIONS.filter(station => station.type === 'water-metro');
+
+  container.innerHTML = waterMetroTerminals.map(station => `
     <div class="terminal-card" data-station-id="${station.id}">
       <div class="terminal-card-img-wrap">
         <img 
           class="terminal-card-img" 
-          src="https://cdn-dev.watermetro.co.in/kakkanad_station_c7f7508e20.jpg" 
+          src="${station.image || `/assets/terminals/${station.id}.jpg`}" 
           alt="${station.name} Terminal" 
           loading="lazy"
+          onerror="this.onerror=null;this.src='/assets/terminal-pontoon.jpg';"
         />
         <span class="terminal-status-badge ${station.status}">
           ${station.status === 'operational' ? '🟢 Operational' : '🟡 Phase 2'}
@@ -104,13 +107,17 @@ function renderTerminalsCarousel() {
     </div>
   `).join('');
 
-  // Click on card opens details
+  // Click on card opens details in planner
   container.querySelectorAll('.terminal-card').forEach(card => {
     card.addEventListener('click', () => {
       const stationId = card.getAttribute('data-station-id');
       const station = STATIONS.find(s => s.id === stationId);
       if (station) {
         setPlannerOrigin(station.id);
+        const plannerEl = document.getElementById('journey-planner');
+        if (plannerEl) {
+          plannerEl.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     });
   });

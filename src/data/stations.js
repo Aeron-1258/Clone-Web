@@ -20,6 +20,7 @@ export const STATIONS = [
     amenities: ['AC Waiting Lounge', 'Kochi1 AFC Gates', 'Restrooms', 'Wheelchair Ramp', 'Cafeteria', 'Wi-Fi'],
     fareEstimate: '₹20 - ₹30',
     mapsUrl: 'https://maps.google.com/?q=High+Court+Water+Metro+Terminal+Kochi',
+    image: '/assets/terminals/high-court.jpg',
     connections: ['vypin', 'fort-kochi', 'bolgatty', 'south-chittoor', 'mattancherry', 'willingdon-island']
   },
   {
@@ -42,6 +43,7 @@ export const STATIONS = [
     amenities: ['Direct Metro Interchange', 'Multilevel Parking', 'Kochi1 Smart Counter', 'VIP Lounge', 'Baby Care', 'EV Charging'],
     fareEstimate: '₹20 - ₹35',
     mapsUrl: 'https://maps.google.com/?q=Vyttila+Water+Metro+Terminal+Kochi',
+    image: '/assets/terminals/vytilla.jpg',
     connections: ['kakkanad', 'thevara', 'kumbalam']
   },
   {
@@ -64,6 +66,7 @@ export const STATIONS = [
     amenities: ['Heritage Tourist Desk', 'Biennale Info Bay', 'Baggage Lockers', 'Souvenir Kiosk', 'Wheelchair Ramps'],
     fareEstimate: '₹20 - ₹30',
     mapsUrl: 'https://maps.google.com/?q=Fort+Kochi+Water+Metro+Terminal',
+    image: '/assets/terminals/fort-kochi.jpg',
     connections: ['high-court', 'vypin', 'mattancherry']
   },
   {
@@ -86,6 +89,7 @@ export const STATIONS = [
     amenities: ['AC Passenger Lounge', 'Feeder E-Bus Bays', 'Kochi1 Smart Gates', 'Bicycle Racks', 'Restrooms'],
     fareEstimate: '₹30 - ₹40',
     mapsUrl: 'https://maps.google.com/?q=Kakkanad+Water+Metro+Terminal',
+    image: '/assets/terminals/kakkanad.jpg',
     connections: ['vytilla']
   },
   {
@@ -108,6 +112,7 @@ export const STATIONS = [
     amenities: ['Covered Pontoon', 'Two-wheeler Parking', 'Kochi1 Smart Gates', 'Drinking Water', 'Restrooms'],
     fareEstimate: '₹20',
     mapsUrl: 'https://maps.google.com/?q=Vypin+Water+Metro+Terminal',
+    image: '/assets/terminals/vypin.jpg',
     connections: ['high-court', 'fort-kochi']
   },
   {
@@ -130,6 +135,7 @@ export const STATIONS = [
     amenities: ['Heritage Architecture Design', 'Tourist Info Bay', 'Smart Card AFC', 'Restrooms'],
     fareEstimate: '₹20 - ₹30',
     mapsUrl: 'https://maps.google.com/?q=Mattancherry+Water+Metro+Terminal',
+    image: '/assets/terminals/mattancherry.jpg',
     connections: ['high-court', 'fort-kochi', 'willingdon-island']
   },
   {
@@ -152,6 +158,7 @@ export const STATIONS = [
     amenities: ['VIP Marina Access', 'Convention Shuttle Bay', 'Kochi1 AFC', 'Tourist Helpdesk'],
     fareEstimate: '₹20',
     mapsUrl: 'https://maps.google.com/?q=Bolgatty+Water+Metro+Terminal',
+    image: '/assets/terminals/bolgatty.jpg',
     connections: ['high-court', 'mulavukad']
   },
   {
@@ -174,6 +181,7 @@ export const STATIONS = [
     amenities: ['Deep Draft Berth', 'Port Pass Office', 'Kochi1 Gates', 'Cafeteria', 'Restrooms'],
     fareEstimate: '₹20',
     mapsUrl: 'https://maps.google.com/?q=Willingdon+Island+Water+Metro+Terminal',
+    image: '/assets/terminals/willingdon-island.jpg',
     connections: ['high-court', 'mattancherry']
   },
   {
@@ -196,6 +204,7 @@ export const STATIONS = [
     amenities: ['Solar Powered Pontoon', 'Disabled Friendly Gangway', 'Kochi1 Smart Gates', 'Restrooms'],
     fareEstimate: '₹20 - ₹30',
     mapsUrl: 'https://maps.google.com/?q=South+Chittoor+Water+Metro+Terminal',
+    image: '/assets/terminals/south-chittoor.jpg',
     connections: ['high-court', 'cheranalloor', 'eloor']
   },
   {
@@ -218,6 +227,7 @@ export const STATIONS = [
     amenities: ['Floating Pontoon Jetty', 'Kochi1 Smart Ticketing', 'Waiting Area', 'Cycle Stand'],
     fareEstimate: '₹20',
     mapsUrl: 'https://maps.google.com/?q=Cheranalloor+Water+Metro+Terminal',
+    image: '/assets/terminals/cheranalloor.jpg',
     connections: ['south-chittoor', 'eloor']
   },
   {
@@ -240,6 +250,7 @@ export const STATIONS = [
     amenities: ['Modern Jetty Terminal', 'Automated Gates', 'Lighting & Buoys', 'Restrooms'],
     fareEstimate: '₹20',
     mapsUrl: 'https://maps.google.com/?q=Eloor+Water+Metro+Terminal',
+    image: '/assets/terminals/eloor.jpg',
     connections: ['south-chittoor', 'cheranalloor']
   },
   {
@@ -262,6 +273,7 @@ export const STATIONS = [
     amenities: ['Eco-designed Bamboo & Steel Pontoon', 'Bird Watching Deck', 'Cycle Rental Bay'],
     fareEstimate: '₹30 - ₹40',
     mapsUrl: 'https://maps.google.com/?q=Kadamakkudy+Islands+Kochi',
+    image: '/assets/terminals/kadamakkudy.jpg',
     connections: ['south-chittoor', 'cheranalloor']
   },
 
