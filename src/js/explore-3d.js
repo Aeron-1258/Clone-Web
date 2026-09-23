@@ -44,7 +44,7 @@ export function initExplore3D() {
 function renderExploreCards(container) {
   container.innerHTML = ATTRACTIONS.map((att, idx) => `
     <div class="explore-3d-card" data-index="${idx}">
-      <img src="${att.image}" alt="${att.name}" loading="lazy" />
+      <img src="${att.image}" alt="${att.alt || att.name}" loading="lazy" />
       
       <div class="explore-card-icons">
         <a href="${att.mapsUrl}" target="_blank" rel="noopener noreferrer" class="explore-icon-btn" title="Get Google Maps Directions">

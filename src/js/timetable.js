@@ -22,6 +22,15 @@ export function initTimetable() {
   });
 }
 
+export function setTimetableTerminal(stationId) {
+  const terminalFilter = document.getElementById('timetable-terminal-filter');
+  const tableBody = document.getElementById('timetable-rows');
+  if (terminalFilter && tableBody) {
+    terminalFilter.value = stationId;
+    renderTimetableRows(tableBody, stationId);
+  }
+}
+
 function renderTimetableRows(container, selectedStationId) {
   let activeRoutes = ROUTES.filter(r => r.status === 'operational');
 

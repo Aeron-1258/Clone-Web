@@ -1,12 +1,13 @@
 import { initSplashScreen } from './splash.js';
 import { initNavigation } from './nav.js';
 import { initHeroScroll } from './hero-scroll.js';
+import { initHeroScroll2 } from './hero-scroll-2.js';
+import { initBookingModal, openBookingModal } from './booking-modal.js';
 import { initRidershipCounter } from './ridership.js';
 import { initNetworkMap } from './map.js';
-import { initJourneyPlanner, setPlannerOrigin } from './planner.js';
-import { initTimetable } from './timetable.js';
+import { initTimetable, setTimetableTerminal } from './timetable.js';
 import { initFanLayout } from './fan-layout.js';
-import { initExplore3D } from './explore-3d.js';
+import { initExploreCarousel } from './explore-carousel.js';
 import { initCardFlip } from './card-flip.js';
 import { initVirtualTour } from './virtual-tour.js';
 import { initSustainability } from './sustainability.js';
@@ -24,28 +25,31 @@ document.addEventListener('DOMContentLoaded', () => {
     applyLanguageTranslations(dict);
   });
 
-  // 2b. Smooth Multi-Platform Hero Scroll Animation
+  // 2b. First Hero Section Scroll-Driven Animation
   initHeroScroll();
+
+  // 2c. Hero 2 Scroll Animation ("Connecting Kochi" 100-frame sequence)
+  initHeroScroll2();
+
+  // 2f. Dedicated Ticket Booking Modal & Route (/book-tickets)
+  initBookingModal();
 
   // 3. Live Ridership Counter
   initRidershipCounter();
 
   // 4. Interactive Network Map
   initNetworkMap((stationId) => {
-    setPlannerOrigin(stationId);
+    setTimetableTerminal(stationId);
   });
 
-  // 5. Smart Journey Planner
-  initJourneyPlanner();
-
-  // 6. Timetable Schedule Board
+  // 5. Timetable Schedule Board
   initTimetable();
 
   // 7. 3D Fan Layout Transit Showcase
   initFanLayout();
 
-  // 8. 3D Perspective Explore Kochi Carousel
-  initExplore3D();
+  // 8. Horizontal Destination Card Carousel (Explore Kochi)
+  initExploreCarousel();
 
   // 9. 3D Kochi1 Card Flipper
   initCardFlip();
@@ -107,16 +111,16 @@ function renderTerminalsCarousel() {
     </div>
   `).join('');
 
-  // Click on card opens details in planner
+  // Click on card opens terminal schedule in timetable
   container.querySelectorAll('.terminal-card').forEach(card => {
     card.addEventListener('click', () => {
       const stationId = card.getAttribute('data-station-id');
       const station = STATIONS.find(s => s.id === stationId);
       if (station) {
-        setPlannerOrigin(station.id);
-        const plannerEl = document.getElementById('journey-planner');
-        if (plannerEl) {
-          plannerEl.scrollIntoView({ behavior: 'smooth' });
+        setTimetableTerminal(station.id);
+        const timetableEl = document.getElementById('timetable-section');
+        if (timetableEl) {
+          timetableEl.scrollIntoView({ behavior: 'smooth' });
         }
       }
     });
@@ -274,3 +278,4 @@ function applyLanguageTranslations(dict) {
     }
   });
 }
+

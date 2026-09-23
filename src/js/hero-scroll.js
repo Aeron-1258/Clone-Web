@@ -1,77 +1,88 @@
-import { TOTAL_HERO_FRAMES, getHeroFrameUrl } from '../data/hero-frames.js';
+import {
+  TOTAL_HERO_FRAMES,
+  SOURCE_FRAME_WIDTH,
+  SOURCE_FRAME_HEIGHT,
+  SOURCE_ASPECT_RATIO,
+  getHeroFrameUrl,
+  getHeroFrameFallbacks
+} from '../data/hero-frames.js';
 
 /**
- * High-Performance Cross-Platform Scroll-Driven Hero Canvas Engine
- * Renders Kochi Water Metro frame sequence at native source resolution (3392x1912)
- * with zero unnecessary smoothing/resampling for razor-sharp clarity across all screens.
+ * Premium Production-Ready Scroll-Driven Hero Animation Engine
+ * Renders Kochi Water Metro 85-frame sequence onto high-DPI HTML5 Canvas.
+ * Features:
+ * - Fluid scroll-driven progression & smooth reverse scrubbing
+ * - Apple-style dampened lerp physics with zero frame tearing
+ * - Proportional object-fit: cover preservation across Mobile, Tablet, Laptop, Desktop
+ * - Asynchronous GPU-accelerated frame preloading & zero-flicker caching
+ * - Support for 100vh / 100dvh / 100svh mobile viewports & prefers-reduced-motion
  */
 export function initHeroScroll() {
-  const scrollSection = document.getElementById('hero-scroll-section');
+  const scrollSection = document.getElementById('home') || document.querySelector('.hero-scroll-section');
   const canvas = document.getElementById('hero-frame-canvas');
+  const scrollPrompt = document.getElementById('hero-scroll-prompt');
+
   if (!scrollSection || !canvas) return;
 
   const ctx = canvas.getContext('2d', { alpha: false });
-  const scrollPrompt = document.getElementById('hero-scroll-prompt');
-  const stepItems = document.querySelectorAll('.hero-steps-indicator .step-item');
+  if (!ctx) return;
 
-  // Native source frame dimensions
-  const SOURCE_FRAME_WIDTH = 3392;
-  const SOURCE_FRAME_HEIGHT = 1912;
-
-  // Initialize canvas internal backing-store to native frame resolution
-  canvas.width = SOURCE_FRAME_WIDTH;
-  canvas.height = SOURCE_FRAME_HEIGHT;
-  ctx.imageSmoothingEnabled = false;
-
-  // Motion preference
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Frame Cache
+  // Frame Cache & State
   const frames = new Array(TOTAL_HERO_FRAMES);
+  let isFirstFrameReady = false;
   let renderedFrameIndex = -1;
   let targetProgress = 0;
   let currentProgress = 0;
   let isTicking = false;
   let animationFrameId = null;
 
-  // Track layout metrics
-  let sectionTop = 0;
-  let sectionScrollDist = 0;
+  // Layout Metrics
+  let displayWidth = 0;
+  let displayHeight = 0;
+  let dpr = 1;
+  let drawW = 0;
+  let drawH = 0;
+  let drawX = 0;
+  let drawY = 0;
 
-  function updateMetrics() {
-    const rect = scrollSection.getBoundingClientRect();
-    const scrollTop = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-    sectionTop = rect.top + scrollTop;
-    sectionScrollDist = Math.max(1, scrollSection.offsetHeight - window.innerHeight);
-  }
+  /**
+   * Recalculates canvas sizing and true object-fit: cover coordinates.
+   * Handles devicePixelRatio, high-DPI Retina scaling, and dynamic viewports.
+   */
+  function updateDimensions() {
+    displayWidth = window.innerWidth;
+    displayHeight = window.innerHeight;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-  // Ensure canvas backing-store maintains native source resolution without downsampling
-  function setCanvasInternalResolution(width = SOURCE_FRAME_WIDTH, height = SOURCE_FRAME_HEIGHT) {
-    if (canvas.width !== width || canvas.height !== height) {
-      canvas.width = width;
-      canvas.height = height;
-      // Resizing canvas resets 2D context properties, re-disable smoothing
-      ctx.imageSmoothingEnabled = false;
-      renderedFrameIndex = -1; // Force repaint
+    canvas.width = Math.round(displayWidth * dpr);
+    canvas.height = Math.round(displayHeight * dpr);
+    canvas.style.width = `${displayWidth}px`;
+    canvas.style.height = `${displayHeight}px`;
+
+    // True object-fit: cover scaling factor to prevent distortion or black bars
+    const scale = Math.max(canvas.width / SOURCE_FRAME_WIDTH, canvas.height / SOURCE_FRAME_HEIGHT);
+    drawW = Math.round(SOURCE_FRAME_WIDTH * scale);
+    drawH = Math.round(SOURCE_FRAME_HEIGHT * scale);
+    drawX = Math.round((canvas.width - drawW) / 2);
+    drawY = Math.round((canvas.height - drawH) / 2);
+
+    // Force repaint of the active frame with updated dimensions
+    if (renderedFrameIndex >= 0) {
+      const idx = renderedFrameIndex;
+      renderedFrameIndex = -1;
+      drawFrame(idx);
     }
   }
 
-  // Responsive handler: updates metrics and re-renders while preserving native backing-store
-  function resizeCanvas() {
-    updateMetrics();
-    const currentImg = frames[renderedFrameIndex >= 0 ? renderedFrameIndex : 0] || frames[0];
-    const sw = currentImg?.naturalWidth || SOURCE_FRAME_WIDTH;
-    const sh = currentImg?.naturalHeight || SOURCE_FRAME_HEIGHT;
-    setCanvasInternalResolution(sw, sh);
-    renderCurrentFrame();
-  }
-
-  // Find nearest loaded frame if the target index is still buffering
+  /**
+   * Finds nearest loaded frame if the target frame is still decoding
+   */
   function getNearestLoadedFrame(targetIdx) {
     if (frames[targetIdx]?.complete && frames[targetIdx].naturalWidth > 0) {
       return frames[targetIdx];
     }
-    // Search outward for closest cached frame
     for (let d = 1; d < TOTAL_HERO_FRAMES; d++) {
       const prev = targetIdx - d;
       if (prev >= 0 && frames[prev]?.complete && frames[prev].naturalWidth > 0) {
@@ -85,29 +96,118 @@ export function initHeroScroll() {
     return null;
   }
 
-  // Draw frame at 1:1 native resolution into full-resolution canvas backing store
+  /**
+   * Draws target frame onto the canvas surface with full cover
+   */
   function drawFrame(index) {
     const img = getNearestLoadedFrame(index);
     if (!img) return;
 
-    const sourceWidth = img.naturalWidth || SOURCE_FRAME_WIDTH;
-    const sourceHeight = img.naturalHeight || SOURCE_FRAME_HEIGHT;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, drawX, drawY, drawW, drawH);
 
-    // Ensure backing-store matches source frame actual resolution
-    if (canvas.width !== sourceWidth || canvas.height !== sourceHeight) {
-      canvas.width = sourceWidth;
-      canvas.height = sourceHeight;
-      ctx.imageSmoothingEnabled = false;
-    } else if (ctx.imageSmoothingEnabled) {
-      ctx.imageSmoothingEnabled = false;
-    }
-
-    // Direct 1:1 pixel transfer: no software scaling or dual interpolation blur
-    ctx.drawImage(img, 0, 0, sourceWidth, sourceHeight);
     renderedFrameIndex = index;
   }
 
-  function renderCurrentFrame() {
+  /**
+   * Loads an image with automatic fallback support
+   */
+  function loadImageWithFallbacks(index) {
+    const img = new Image();
+    img.decoding = 'async';
+    const fallbacks = getHeroFrameFallbacks(index);
+    let fallbackIdx = 0;
+
+    img.onerror = () => {
+      if (fallbackIdx < fallbacks.length) {
+        img.src = fallbacks[fallbackIdx++];
+      }
+    };
+
+    img.src = getHeroFrameUrl(index);
+    return img;
+  }
+
+  /**
+   * Progressive frame preloader: Frame 0 loaded immediately for instant paint,
+   * then batches remaining frames smoothly in the background.
+   */
+  function preloadFrames() {
+    // 1. Immediately request Frame 0
+    const firstImg = loadImageWithFallbacks(0);
+    frames[0] = firstImg;
+
+    const onFirstFrameLoaded = () => {
+      if (!isFirstFrameReady) {
+        isFirstFrameReady = true;
+        updateDimensions();
+        drawFrame(0);
+      }
+    };
+
+    if (firstImg.complete && firstImg.naturalWidth > 0) {
+      onFirstFrameLoaded();
+    } else {
+      firstImg.onload = () => {
+        if (firstImg.decode) {
+          firstImg.decode().then(onFirstFrameLoaded).catch(onFirstFrameLoaded);
+        } else {
+          onFirstFrameLoaded();
+        }
+      };
+    }
+
+    // 2. Preload remaining frames progressively
+    preloadRemainingFrames();
+  }
+
+  function preloadRemainingFrames() {
+    let index = 1;
+    const batchSize = 6;
+
+    function loadNextBatch() {
+      if (index >= TOTAL_HERO_FRAMES) return;
+      const end = Math.min(index + batchSize, TOTAL_HERO_FRAMES);
+
+      for (let i = index; i < end; i++) {
+        if (frames[i]) continue;
+        const img = loadImageWithFallbacks(i);
+        frames[i] = img;
+
+        if (img.decode) {
+          img.decode().catch(() => {});
+        }
+      }
+
+      index = end;
+      if (index < TOTAL_HERO_FRAMES) {
+        if (window.requestIdleCallback) {
+          requestIdleCallback(loadNextBatch, { timeout: 80 });
+        } else {
+          setTimeout(loadNextBatch, 25);
+        }
+      }
+    }
+
+    setTimeout(loadNextBatch, 40);
+  }
+
+  /**
+   * Computes normalized scroll progress within the hero section (0.0 to 1.0)
+   */
+  function calculateProgress() {
+    const rect = scrollSection.getBoundingClientRect();
+    const scrollDist = scrollSection.offsetHeight - window.innerHeight;
+    if (scrollDist <= 0) return 0;
+    const scrolled = -rect.top;
+    return Math.max(0, Math.min(1, scrolled / scrollDist));
+  }
+
+  /**
+   * Renders the frame corresponding to currentProgress
+   */
+  function renderFrameAtCurrentProgress() {
     const frameIdx = Math.min(
       TOTAL_HERO_FRAMES - 1,
       Math.max(0, Math.round(currentProgress * (TOTAL_HERO_FRAMES - 1)))
@@ -117,45 +217,32 @@ export function initHeroScroll() {
       drawFrame(frameIdx);
     }
 
-    // Update floating timeline stepper
-    if (stepItems.length > 0) {
-      if (currentProgress < 0.5) {
-        stepItems[0]?.classList.add('active');
-        stepItems[1]?.classList.remove('active');
-      } else {
-        stepItems[0]?.classList.remove('active');
-        stepItems[1]?.classList.add('active');
-      }
-    }
-
-    // Fade scroll prompt indicator
     if (scrollPrompt) {
-      if (currentProgress > 0.06) {
-        scrollPrompt.classList.add('faded');
-      } else {
-        scrollPrompt.classList.remove('faded');
-      }
+      scrollPrompt.style.opacity = currentProgress > 0.06 ? '0' : '1';
+      scrollPrompt.style.pointerEvents = currentProgress > 0.06 ? 'none' : 'auto';
     }
   }
 
-  // Physics animation loop: Damped Lerp for ultra-smooth 60/120fps motion
+  /**
+   * Main animation tick with Apple-style smooth lerp damping
+   */
   function onTick() {
     if (prefersReducedMotion) {
       currentProgress = targetProgress;
-      renderCurrentFrame();
+      renderFrameAtCurrentProgress();
       isTicking = false;
       return;
     }
 
-    // Snappy damping factor: 0.22 gives instant responsiveness with silky inertia
     const diff = targetProgress - currentProgress;
-    if (Math.abs(diff) > 0.0008) {
+    if (Math.abs(diff) > 0.0004) {
+      // 0.22 damping factor for responsive, buttery continuous movement
       currentProgress += diff * 0.22;
-      renderCurrentFrame();
+      renderFrameAtCurrentProgress();
       animationFrameId = requestAnimationFrame(onTick);
     } else {
       currentProgress = targetProgress;
-      renderCurrentFrame();
+      renderFrameAtCurrentProgress();
       isTicking = false;
       animationFrameId = null;
     }
@@ -168,78 +255,34 @@ export function initHeroScroll() {
     }
   }
 
-  // Scroll event handler with passive listener
   function onScroll() {
-    const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-    const relativeY = scrollY - sectionTop;
-
-    if (sectionScrollDist <= 0) {
-      targetProgress = 0;
-    } else {
-      targetProgress = Math.min(1, Math.max(0, relativeY / sectionScrollDist));
-    }
-
+    targetProgress = calculateProgress();
     scheduleUpdate();
   }
 
-  // Eager frame preloading: immediate paint of Frame 0 + concurrent preload & decode of all 85 frames
-  function preloadFrames() {
-    // 1. Immediately request Frame 0 for instant initial paint
-    const firstImg = new Image();
-    firstImg.src = getHeroFrameUrl(0);
-    frames[0] = firstImg;
-
-    const onFirstFrameLoaded = () => {
-      if (firstImg.naturalWidth > 0 && firstImg.naturalHeight > 0) {
-        setCanvasInternalResolution(firstImg.naturalWidth, firstImg.naturalHeight);
-      }
-      drawFrame(0);
-    };
-
-    if (firstImg.complete && firstImg.naturalWidth > 0) {
-      onFirstFrameLoaded();
-    } else {
-      firstImg.onload = onFirstFrameLoaded;
-      firstImg.onerror = () => {
-        firstImg.src = getHeroFrameUrl(0, true);
-        firstImg.onload = onFirstFrameLoaded;
-      };
-    }
-
-    // 2. Preload and decode all remaining frames concurrently so scrolling has zero intermediate fallback
-    preloadAllFrames();
+  // Debounced resize handler
+  let resizeTimeout = null;
+  function onResize() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      updateDimensions();
+      targetProgress = calculateProgress();
+      currentProgress = targetProgress;
+      renderFrameAtCurrentProgress();
+    }, 50);
   }
 
-  function preloadAllFrames() {
-    for (let i = 1; i < TOTAL_HERO_FRAMES; i++) {
-      if (frames[i]) continue;
-      const img = new Image();
-      const frameNum = i;
-      img.src = getHeroFrameUrl(frameNum);
-      frames[frameNum] = img;
+  // Initial sizing & preloading
+  updateDimensions();
+  preloadFrames();
+  targetProgress = calculateProgress();
+  currentProgress = targetProgress;
 
-      // Asynchronous background GPU bitmap decoding
-      if (img.decode) {
-        img.decode().catch(() => {});
-      }
-
-      img.onerror = () => {
-        const fallback = new Image();
-        fallback.src = getHeroFrameUrl(frameNum, true);
-        if (fallback.decode) fallback.decode().catch(() => {});
-        frames[frameNum] = fallback;
-      };
-    }
-  }
-
-  // Event Listeners
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', resizeCanvas, { passive: true });
+  window.addEventListener('resize', onResize, { passive: true });
   window.addEventListener('orientationchange', () => {
-    setTimeout(resizeCanvas, 100);
+    setTimeout(onResize, 100);
   }, { passive: true });
 
-  // Initial sizing & paint
-  updateMetrics();
-  preloadFrames();
+  scheduleUpdate();
 }

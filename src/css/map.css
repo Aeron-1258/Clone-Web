@@ -1,57 +1,81 @@
 /* ====================================================
-   EXPLORE THE NETWORK - MODERN INTERACTIVE MAP & CARD
-   (Directly inspired by corporate.kochimetro.org layout)
+   EXPLORE THE NETWORK - REFINED CORPORATE TRANSIT DESIGN
+   (Directly matching corporate.kochimetro.org reference layout)
    ==================================================== */
 
 .network-map-section {
-  background: linear-gradient(180deg, #f8fafc 0%, #edf9f9 50%, #f0fdfa 100%);
-  color: var(--km-navy);
-  padding: 6rem 0 5rem;
+  background: linear-gradient(180deg, #edf4fb 0%, #e5eef8 45%, #edf4fa 100%);
+  color: #0f172a;
+  padding: 5rem 0 4.5rem;
   position: relative;
   overflow: hidden;
 }
 
-/* Subtle background map watermark */
-.network-map-section::before {
-  content: '';
+/* Subtle Background World Map Continent Silhouette Watermark */
+.network-bg-watermark {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: radial-gradient(circle at 10% 20%, rgba(0, 153, 153, 0.04) 0%, transparent 40%),
-                    radial-gradient(circle at 90% 80%, rgba(64, 224, 208, 0.05) 0%, transparent 40%);
   pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
 }
 
+.network-watermark-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.network-container {
+  position: relative;
+  z-index: 2;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Section Header (Classic Serif Typography from corporate.kochimetro.org) */
 .network-section-header {
   text-align: center;
-  max-width: 800px;
-  margin: 0 auto 3rem;
+  max-width: 850px;
+  margin: 0 auto 2.8rem;
   position: relative;
   z-index: 2;
 }
 
 .network-title {
-  font-family: var(--font-accent), Georgia, serif;
+  font-family: Georgia, 'Playfair Display', 'Times New Roman', serif;
   font-size: clamp(2.5rem, 5vw, 3.8rem);
   font-weight: 800;
   color: #0f172a;
   letter-spacing: -0.02em;
-  margin-bottom: 0.75rem;
+  margin: 0 0 0.6rem;
+  line-height: 1.15;
 }
 
 .network-subtitle {
-  font-family: var(--font-body);
-  font-size: clamp(1.05rem, 1.8vw, 1.2rem);
-  color: #475569;
-  font-weight: 500;
+  font-family: Georgia, serif;
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  color: #556987;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
 }
 
-/* 2-Column Split: Map on Left (62%), Station Card on Right (38%) */
+/* 2-Column Split: Map on Left (60%), Station Details Card on Right (40%) */
 .network-split-layout {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: 1.45fr 1fr;
   gap: 2rem;
   align-items: stretch;
   position: relative;
@@ -61,59 +85,83 @@
 /* Leaflet Map Canvas Container */
 .network-map-wrapper {
   position: relative;
-  border-radius: 28px;
+  border-radius: 22px;
   overflow: hidden;
-  box-shadow: 0 15px 40px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
   border: 1px solid rgba(226, 232, 240, 0.9);
   background: #ffffff;
-  height: 600px;
+  height: 100%;
+  min-height: 540px;
 }
 
 #leaflet-map {
   width: 100%;
   height: 100%;
+  min-height: 540px;
   z-index: 1;
 }
 
-/* Custom Floating Filter Dropdown Over Map */
-.map-network-dropdown {
+/* Floating Pill Dropdown in Top Right (Image 1) */
+.map-floating-pill-menu {
   position: absolute;
-  top: 18px;
-  right: 18px;
+  top: 16px;
+  right: 16px;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  pointer-events: auto;
+}
+
+.map-network-dropdown {
+  background: #ffffff;
+  border-radius: 9999px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.12);
   border: 1px solid #e2e8f0;
-  border-radius: 100px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  padding: 6px 14px;
+  padding: 8px 16px;
+  gap: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.map-network-dropdown:hover {
+  border-color: #009999;
+  box-shadow: 0 6px 22px rgba(0, 153, 153, 0.2);
+}
+
+.dropdown-network-icon {
+  color: #009999;
+  flex-shrink: 0;
 }
 
 .map-network-select {
   border: none;
   background: transparent;
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-weight: 700;
   color: #0f172a;
   cursor: pointer;
   outline: none;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 4px;
 }
 
-/* Leaflet Custom Controls Customization */
+.dropdown-chevron {
+  color: #64748b;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+/* Custom Leaflet Zoom Control Styling */
 .leaflet-control-zoom {
   border: none !important;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12) !important;
-  border-radius: 16px !important;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12) !important;
+  border-radius: 12px !important;
   overflow: hidden;
-  margin-top: 18px !important;
-  margin-left: 18px !important;
+  margin-top: 16px !important;
+  margin-left: 16px !important;
 }
 
 .leaflet-control-zoom-in,
@@ -122,281 +170,301 @@
   color: #0f172a !important;
   font-weight: 700 !important;
   font-size: 16px !important;
-  line-height: 34px !important;
-  width: 36px !important;
-  height: 36px !important;
+  line-height: 32px !important;
+  width: 34px !important;
+  height: 34px !important;
   border: none !important;
   transition: all 0.2s ease !important;
 }
 
 .leaflet-control-zoom-in:hover,
 .leaflet-control-zoom-out:hover {
-  background-color: var(--km-teal-light) !important;
-  color: var(--km-teal) !important;
+  background-color: #f1f5f9 !important;
+  color: #009999 !important;
 }
 
 /* ====================================================
-   STATION DETAILS CARD (Right Column)
-   (Directly mirrors the card in Picture 2)
+   STATION DETAILS CARD (Exact Image 1 Layout)
    ==================================================== */
 .network-station-card {
   background: #ffffff;
-  border-radius: 28px;
-  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
-  border: 1px solid #f1f5f9;
-  padding: 1.75rem;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(226, 232, 240, 0.9);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  height: 100%;
+  min-height: 540px;
   position: relative;
-  transition: all var(--transition-base);
-  min-height: 600px;
+  transition: all 0.25s ease;
 }
 
-/* Card Top Colored Themed Banner */
-.station-card-banner {
-  background: #a3e635; /* default / dynamically set */
-  border-radius: 20px;
-  height: 125px;
+/* Top Banner: Lime-Chartreuse with Malayalam Left, KMRL Emblem Center, English Right */
+.station-card-top-banner {
+  background: #c3de14;
+  border-radius: 14px;
+  padding: 20px 24px;
+  min-height: 104px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.75rem;
   position: relative;
-  overflow: hidden;
-  box-shadow: inset 0 -4px 10px rgba(0,0,0,0.06);
-  transition: background-color 0.4s ease;
+  box-shadow: 0 4px 14px rgba(195, 222, 20, 0.28);
+  transition: background-color 0.3s ease;
 }
 
 .banner-ml-text {
-  font-family: var(--font-body);
-  font-size: 1.25rem;
+  font-size: 1.18rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #111827;
+  flex: 1;
+  text-align: left;
 }
 
-/* Official Logo Pill Badge in Center of Banner */
-.banner-logo-badge {
-  background: #0d1b2a;
-  border-radius: 12px;
-  padding: 8px 14px;
+.banner-metro-emblem {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 2px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  border: 1px solid rgba(255,255,255,0.15);
+  flex-shrink: 0;
 }
 
-.banner-logo-badge svg {
-  height: 18px;
-  width: auto;
+.emblem-inner-box {
+  background: #0f172a;
+  border-radius: 8px;
+  padding: 6px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
 }
 
-.banner-logo-badge span {
-  font-family: var(--font-body);
-  font-size: 0.65rem;
-  font-weight: 800;
+.emblem-svg {
+  width: 32px;
+  height: 14px;
+}
+
+.emblem-caption {
   color: #ffffff;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  font-family: var(--font-body);
+  margin-top: 2px;
+  line-height: 1;
 }
 
 .banner-en-text {
-  font-family: var(--font-body);
-  font-size: 1.15rem;
+  font-size: 1.18rem;
   font-weight: 800;
-  color: #0f172a;
-}
-
-/* Station Names & Content */
-.station-content-body {
-  padding: 1.5rem 0.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+  color: #111827;
   flex: 1;
+  text-align: right;
 }
 
-.station-title-row {
-  display: flex;
-  flex-direction: column;
+/* Station Main Heading & Malayalam Subtitle */
+.station-details-heading {
+  margin: 1.8rem 0 1.2rem;
 }
 
-.station-main-name {
-  font-family: var(--font-accent), Georgia, serif;
-  font-size: 2.2rem;
+.station-title-text {
+  font-family: Georgia, 'Playfair Display', serif;
+  font-size: 2.35rem;
   font-weight: 800;
   color: #0f172a;
-  line-height: 1.1;
-  margin: 0;
+  margin: 0 0 0.25rem;
+  line-height: 1.15;
 }
 
-.station-sub-name {
-  font-family: var(--font-body);
-  font-size: 1.15rem;
-  color: #009999;
-  font-weight: 600;
-  margin-top: 4px;
+.station-ml-subtext {
+  font-size: 1.22rem;
+  color: #64748b;
+  font-weight: 500;
 }
 
-/* Info Rows (Timings, Nearby, Feeder) */
-.station-info-row {
+/* Info Entries (Operating Timings & Nearby Landmarks) */
+.station-info-entry {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  font-size: 0.95rem;
+  margin-bottom: 1.15rem;
   line-height: 1.5;
+  color: #334155;
+  font-size: 0.98rem;
 }
 
-.station-info-icon {
+.station-entry-icon {
   width: 22px;
   height: 22px;
   color: #009999;
+  stroke: #009999;
   flex-shrink: 0;
   margin-top: 2px;
 }
 
-.station-info-text strong {
+.station-entry-val {
+  font-size: 0.98rem;
+  color: #334155;
+}
+
+.station-entry-val strong {
   color: #0f172a;
   font-weight: 700;
 }
 
-.station-info-text {
-  color: #475569;
+/* Full-Width Action Button: View on Google Maps */
+.station-action-bottom {
+  margin-top: auto;
+  padding-top: 1.2rem;
 }
 
-/* Badges for Headway and Fare */
-.station-meta-badges {
+.btn-view-google-maps {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 0.5rem;
-}
-
-.station-pill-badge {
-  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: var(--radius-pill);
-  font-size: 0.82rem;
-  font-weight: 700;
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid #e2e8f0;
-}
-
-.station-pill-badge.highlight {
-  background: var(--km-teal-light);
-  color: var(--km-teal-hover);
-  border-color: rgba(0, 153, 153, 0.3);
-}
-
-/* Action Buttons (As shown in Picture 2) */
-.station-card-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-.btn-view-gmaps {
+  justify-content: center;
   width: 100%;
-  padding: 1.05rem;
-  border-radius: 14px;
   background: #0f172a;
   color: #ffffff;
+  padding: 15px 20px;
+  border-radius: 12px;
   font-family: var(--font-body);
-  font-size: 1rem;
   font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  font-size: 0.98rem;
   text-decoration: none;
-  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.15);
-  transition: all 0.25s ease;
-}
-
-.btn-view-gmaps:hover {
-  background: #1e293b;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.25);
-  color: #ffffff;
-}
-
-.btn-plan-from-station {
-  width: 100%;
-  padding: 0.9rem;
-  border-radius: 14px;
-  background: transparent;
-  color: var(--km-teal);
-  border: 2px solid var(--km-teal);
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  border: none;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
+  text-align: center;
 }
 
-.btn-plan-from-station:hover {
-  background: var(--km-teal);
+.btn-view-google-maps:hover {
+  background: #1e293b;
   color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.3);
 }
 
 /* ====================================================
-   QUICK SELECTION CHIPS BAR (Below the Map)
+   HORIZONTAL QUICK CHIPS DECK (Images 2 & 3)
    ==================================================== */
-.network-quick-chips-bar {
+.network-chips-wrapper {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+  padding: 18px 24px 14px;
+  margin-top: 1.8rem;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 2.5rem;
+  flex-direction: column;
+  gap: 12px;
   position: relative;
   z-index: 5;
 }
 
-.network-chip {
-  padding: 8px 18px;
-  border-radius: 100px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  background: #ffffff;
-  color: #475569;
-  border: 1.5px solid #e2e8f0;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
-  cursor: pointer;
-  transition: all 0.2s ease;
+.network-chips-scroll {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 6px;
+  width: 100%;
 }
 
-.network-chip:hover,
-.network-chip.active {
-  background: var(--km-teal);
+.network-chips-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.station-chip-pill {
+  background: #ffffff;
+  color: #334155;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 9999px;
+  padding: 9px 22px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: var(--font-body);
+  flex-shrink: 0;
+}
+
+.station-chip-pill:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.station-chip-pill.active {
+  background: #0f172a;
   color: #ffffff;
-  border-color: var(--km-teal);
-  box-shadow: 0 4px 15px rgba(0, 153, 153, 0.3);
-  transform: translateY(-2px);
+  border-color: #0f172a;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
 }
 
-.network-chip .chip-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: currentColor;
+/* Horizontal Scrollbar with Navigation Arrows */
+.network-chips-scrollbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 0 4px;
 }
 
-/* Custom Marker Styles on Map */
+.chips-scroll-arrow {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: all 0.15s ease;
+  border-radius: 4px;
+}
+
+.chips-scroll-arrow:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+.chips-track-bar {
+  flex: 1;
+  height: 5px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.chips-track-thumb {
+  position: absolute;
+  height: 100%;
+  width: 18%;
+  background: #64748b;
+  border-radius: 9999px;
+  left: 0;
+  transition: transform 0.08s ease;
+}
+
+
+
+/* ====================================================
+   LEAFLET CUSTOM PINS & ANIMATED BOAT CRUISER
+   ==================================================== */
 .custom-station-pin {
   display: flex;
   align-items: center;
@@ -412,22 +480,22 @@
 }
 
 .pin-inner-boat {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background: #0284c7;
+  background: linear-gradient(135deg, #0284c7 0%, #009999 100%);
   border: 3px solid #ffffff;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .pin-inner-metro {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: #14b8a6;
   border: 3px solid #ffffff;
@@ -435,12 +503,63 @@
 }
 
 .pin-inner-pink {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #ec4899;
   border: 3px solid #ffffff;
   box-shadow: 0 4px 10px rgba(236, 72, 153, 0.4);
+}
+
+/* Dynamic Cruising Electric Boat Marker */
+.animated-cruising-boat {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.boat-wake-ripple {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.25);
+  animation: boat-wake 2s infinite ease-out;
+  pointer-events: none;
+}
+
+@keyframes boat-wake {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.boat-icon-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #0f172a;
+  border: 2px solid #38bdf8;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #38bdf8;
+  font-size: 15px;
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.animated-cruising-boat:hover .boat-icon-badge {
+  transform: scale(1.2);
+  border-color: #22c55e;
 }
 
 /* Responsive adjustments */
@@ -453,5 +572,12 @@
   }
   .network-station-card {
     min-height: auto;
+  }
+  .map-floating-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .map-style-toggle-group {
+    justify-content: center;
   }
 }

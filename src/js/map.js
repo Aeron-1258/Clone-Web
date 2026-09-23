@@ -6,106 +6,113 @@ import { ROUTES } from '../data/routes.js';
 let mapInstance = null;
 let stationMarkers = {};
 let currentSelectedStation = null;
+let activeBoatMarker = null;
+let boatAnimationInterval = null;
+let departureTimerInterval = null;
+let departureSecondsRemaining = 225; // 3m 45s
+let currentFilterCategory = 'all';
 
-// Route Polylines Data
+// Official Kochi Water Metro Navigational Waterway Corridors
 const WATER_METRO_LINES = [
   // High Court <-> Vypin
-  [[9.9825, 76.2755], [9.9850, 76.2620], [9.9868, 76.2442]],
+  [[9.9839, 76.2730], [9.9820, 76.2580], [9.9740, 76.2443]],
   // High Court <-> Fort Kochi
-  [[9.9825, 76.2755], [9.9760, 76.2610], [9.9678, 76.2435]],
+  [[9.9839, 76.2730], [9.9750, 76.2550], [9.9684, 76.2432]],
   // Fort Kochi <-> Vypin
-  [[9.9678, 76.2435], [9.9770, 76.2440], [9.9868, 76.2442]],
+  [[9.9684, 76.2432], [9.9710, 76.2438], [9.9740, 76.2443]],
   // High Court <-> Bolgatty
-  [[9.9825, 76.2755], [9.9830, 76.2670]],
+  [[9.9839, 76.2730], [9.9830, 76.2670]],
+  // Bolgatty <-> Mulavukad
+  [[9.9830, 76.2670], [9.9950, 76.2675], [10.0050, 76.2680]],
   // High Court <-> South Chittoor
-  [[9.9825, 76.2755], [9.9980, 76.2720], [10.0150, 76.2750], [10.0290, 76.2780]],
+  [[9.9839, 76.2730], [10.0050, 76.2680], [10.0220, 76.2710], [10.0384, 76.2697]],
   // South Chittoor <-> Cheranalloor
-  [[10.0290, 76.2780], [10.0400, 76.2810], [10.0480, 76.2840]],
+  [[10.0384, 76.2697], [10.0550, 76.2750], [10.0726, 76.2827]],
   // Cheranalloor <-> Eloor
-  [[10.0480, 76.2840], [10.0620, 76.2890], [10.0760, 76.2950]],
+  [[10.0726, 76.2827], [10.0735, 76.2827], [10.0741, 76.2828]],
+  // South Chittoor <-> Eloor
+  [[10.0384, 76.2697], [10.0550, 76.2750], [10.0741, 76.2828]],
   // South Chittoor <-> Kadamakkudy
-  [[10.0290, 76.2780], [10.0450, 76.2650], [10.0650, 76.2550]],
+  [[10.0384, 76.2697], [10.0520, 76.2600], [10.0650, 76.2550]],
   // High Court <-> Willingdon Island
-  [[9.9825, 76.2755], [9.9680, 76.2730], [9.9520, 76.2720]],
+  [[9.9839, 76.2730], [9.9700, 76.2710], [9.9647, 76.2631]],
   // High Court <-> Mattancherry
-  [[9.9825, 76.2755], [9.9670, 76.2650], [9.9572, 76.2588]],
+  [[9.9839, 76.2730], [9.9670, 76.2620], [9.9590, 76.2603]],
+  // Mattancherry <-> Fort Kochi
+  [[9.9590, 76.2603], [9.9630, 76.2520], [9.9684, 76.2432]],
   // Vyttila <-> Kakkanad
-  [[9.9665, 76.3215], [9.9820, 76.3350], [9.9980, 76.3450], [10.0160, 76.3530]]
+  [[9.9674, 76.3224], [9.9780, 76.3350], [9.9900, 76.3450], [9.9934, 76.3513]]
 ];
 
-const METRO_RAIL_LINE = [
-  [10.1098, 76.3496], // Aluva
-  [10.0980, 76.3440], // Pulinchodu
-  [10.0880, 76.3390], // Companypady
-  [10.0780, 76.3350], // Ambattukavu
-  [10.0680, 76.3310], // Muttom
-  [10.0520, 76.3240], // Kalamassery
-  [10.0420, 76.3200], // CUSAT
-  [10.0330, 76.3150], // Pathadipalam
-  [10.0240, 76.3080], // Edapally
-  [10.0160, 76.3040], // Changampuzha Park
-  [10.0070, 76.3020], // Palarivattom
-  [9.9980, 76.3000],  // JLN Stadium
-  [9.9920, 76.2950],  // Kaloor
-  [9.9870, 76.2880],  // Lissie
-  [9.9820, 76.2840],  // MG Road
-  [9.9720, 76.2850],  // Maharajas
-  [9.9650, 76.2910],  // Ernakulam South
-  [9.9630, 76.3020],  // Kadavanthra
-  [9.9640, 76.3120],  // Elamkulam
-  [9.9665, 76.3215],  // Vyttila
-  [9.9600, 76.3290],  // Thaikoodam
-  [9.9540, 76.3380],  // Petta
-  [9.9510, 76.3440],  // Vadakkekotta
-  [9.9480, 76.3490],  // SN Junction
-  [9.9450, 76.3540]   // Thripunithura
+// Boat Cruise Loop Path (High Court -> Vypin -> Fort Kochi -> Mattancherry -> Willingdon -> High Court)
+const BOAT_CRUISE_WAYPOINTS = [
+  [9.9839, 76.2730], // High Court
+  [9.9820, 76.2580],
+  [9.9740, 76.2443], // Vypin
+  [9.9710, 76.2438],
+  [9.9684, 76.2432], // Fort Kochi
+  [9.9630, 76.2520],
+  [9.9590, 76.2603], // Mattancherry
+  [9.9647, 76.2631], // Willingdon Island
+  [9.9750, 76.2650],
+  [9.9839, 76.2730]  // Back to High Court
 ];
 
-const PHASE2_PINK_LINE = [
-  [9.9980, 76.3000],  // JLN Stadium
-  [10.0050, 76.3120], // Palarivattom Jn
-  [10.0120, 76.3240], // Chembumukku
-  [10.0150, 76.3350], // Vazhakkala
-  [10.0180, 76.3450], // Padamughal
-  [10.0160, 76.3530], // Kakkanad Jn
-  [10.0110, 76.3630], // Cochin SEZ
-  [10.0090, 76.3700], // Chittethukara
-  [10.0070, 76.3780], // KINFRA
-  [10.0050, 76.3860]  // InfoPark
+// 100% OFFICIAL KOCHI WATER METRO TERMINALS LIST (All 13 Water Terminals)
+const WATER_METRO_TERMINALS = [
+  { id: 'high-court', name: 'High Court', mlName: 'ഹൈക്കോടതി', code: 'HC', category: 'central', type: 'CENTRAL HUB', headway: '10 min', color: '#009999' },
+  { id: 'vytilla', name: 'Vyttila Hub', mlName: 'വൈറ്റില', code: 'VH', category: 'central', type: 'MULTIMODAL HUB', headway: '15 min', color: '#0284c7' },
+  { id: 'fort-kochi', name: 'Fort Kochi', mlName: 'ഫോർട്ട് കൊച്ചി', code: 'FK', category: 'heritage', type: 'HERITAGE QUARTER', headway: '15 min', color: '#059669' },
+  { id: 'vypin', name: 'Vypin Island', mlName: 'വൈപ്പിൻ', code: 'VP', category: 'heritage', type: 'ISLAND GATEWAY', headway: '10 min', color: '#0d9488' },
+  { id: 'bolgatty', name: 'Bolgatty Marina', mlName: 'ബോൾഗാട്ടി', code: 'BG', category: 'heritage', type: 'MARINA & RESORT', headway: '15 min', color: '#2563eb' },
+  { id: 'mattancherry', name: 'Mattancherry', mlName: 'മട്ടാഞ്ചേരി', code: 'MC', category: 'heritage', type: 'SPICE QUARTER', headway: '20 min', color: '#d97706' },
+  { id: 'willingdon-island', name: 'Willingdon Island', mlName: 'വെല്ലിംഗ്ടൺ', code: 'WI', category: 'central', type: 'PORT TERMINAL', headway: '20 min', color: '#4f46e5' },
+  { id: 'kakkanad', name: 'Kakkanad', mlName: 'കാക്കനാട്', code: 'KK', category: 'north', type: 'IT CORRIDOR', headway: '15 min', color: '#7c3aed' },
+  { id: 'south-chittoor', name: 'South Chittoor', mlName: 'സൗത്ത് ചിറ്റൂർ', code: 'SC', category: 'north', type: 'RIVERINE ISLAND', headway: '20 min', color: '#059669' },
+  { id: 'cheranalloor', name: 'Cheranalloor', mlName: 'ചേരാനല്ലൂർ', code: 'CN', category: 'north', type: 'NORTH SUBURB', headway: '20 min', color: '#0891b2' },
+  { id: 'eloor', name: 'Eloor', mlName: 'ഏലൂർ', code: 'EL', category: 'north', type: 'PERIYAR JETTY', headway: '25 min', color: '#16a34a' },
+  { id: 'mulavukad', name: 'Mulavukad North', mlName: 'മുളവുകാട്', code: 'MV', category: 'heritage', type: 'ISLAND CONNECTOR', headway: '20 min', color: '#6366f1' },
+  { id: 'kadamakkudy', name: 'Kadamakkudy Eco', mlName: 'കടമക്കുടി', code: 'KD', category: 'north', type: 'ECO ARCHIPELAGO', headway: '30 min', color: '#10b981' }
 ];
 
 let waterMetroLayerGroup = null;
-let metroRailLayerGroup = null;
-let phase2LayerGroup = null;
+let liveVesselLayerGroup = null;
+let currentTileLayer = null;
+
+// High-Definition, Free, Watermark-Free Basemaps
+const BASEMAP_TILES = {
+  topo: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+  satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  streets: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
+};
 
 export function initNetworkMap(onStationSelectForPlanner) {
   const mapElement = document.getElementById('leaflet-map');
   if (!mapElement) return;
 
-  // 1. Initialize Leaflet Map centered at Kochi
+  // 1. Initialize Leaflet Map centered at Kochi Water Metro Hub
   mapInstance = L.map('leaflet-map', {
-    center: [10.010, 76.300],
-    zoom: 12,
+    center: [9.985, 76.265],
+    zoom: 13,
     zoomControl: true,
-    scrollWheelZoom: false, // Prevents unintended page scrolling
+    scrollWheelZoom: false,
     attributionControl: false
   });
 
-  // 2. High-speed, crisp CartoDB Voyager tiles (NO API key, clean pastel waterways & roads)
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  // 2. Add Topographic Basemap by default (Zero Watermarks, crisp waterways)
+  currentTileLayer = L.tileLayer(BASEMAP_TILES.topo, {
     maxZoom: 19,
-    subdomains: 'abcd'
+    subdomains: ['server']
   }).addTo(mapInstance);
 
-  // Enable scroll zoom on map click
+  // Enable scroll zoom on click
   mapInstance.on('click', () => {
     mapInstance.scrollWheelZoom.enable();
   });
 
   // 3. Create Layer Groups
   waterMetroLayerGroup = L.layerGroup().addTo(mapInstance);
-  metroRailLayerGroup = L.layerGroup().addTo(mapInstance);
-  phase2LayerGroup = L.layerGroup().addTo(mapInstance);
+  liveVesselLayerGroup = L.layerGroup().addTo(mapInstance);
 
   // 4. Render Route Polylines
   renderRouteLines();
@@ -113,117 +120,66 @@ export function initNetworkMap(onStationSelectForPlanner) {
   // 5. Render Station Markers
   renderStationPins(onStationSelectForPlanner);
 
-  // 6. Setup Filter Dropdown
-  const filterSelect = document.getElementById('map-network-filter');
-  filterSelect?.addEventListener('change', (e) => {
-    filterNetworkLayers(e.target.value);
-  });
+  // 6. Setup Live Cruising Electric Catamaran Simulation
+  setupLiveBoatCruiser();
 
-  // 7. Setup Quick-Selection Chips Bar
-  setupQuickChips(onStationSelectForPlanner);
+  // 7. Setup Live Departure Seconds Countdown Ticker & Audio Chime
+  setupDepartureCountdown();
+  setupPierChimeAudio();
 
-  // 8. Select default station (Aluva or High Court to showcase Picture 2 design immediately!)
-  const defaultStation = STATIONS.find(s => s.id === 'aluva') || STATIONS[0];
+  // 8. Setup Controls (Basemap Switcher, Layer Filter, Recenter)
+  setupMapControls();
+
+  // 9. Setup Complete 13 Water Metro Terminals Deck
+  setupWaterMetroTerminalsDeck(onStationSelectForPlanner);
+
+  // 10. Select Flagship Station (High Court Water Metro Terminal)
+  const defaultStation = STATIONS.find(s => s.id === 'high-court') || STATIONS[0];
   selectStation(defaultStation, onStationSelectForPlanner, false);
 }
 
 function renderRouteLines() {
-  // Water Metro Blue/Cyan Routes (dashed with glowing outline)
+  // Water Metro Routes (Glowing deep cyan/blue aquatic corridors)
   WATER_METRO_LINES.forEach(latlngs => {
     // Underlay glow
     L.polyline(latlngs, {
       color: '#0284c7',
-      weight: 6,
-      opacity: 0.4,
+      weight: 7,
+      opacity: 0.35,
       lineCap: 'round'
     }).addTo(waterMetroLayerGroup);
 
-    // Primary route line
+    // Primary route line (Crisp dashed marine line)
     L.polyline(latlngs, {
-      color: '#0284c7',
+      color: '#009999',
       weight: 4,
-      opacity: 0.9,
+      opacity: 0.95,
       dashArray: '8, 8',
       lineCap: 'round'
     }).addTo(waterMetroLayerGroup);
   });
-
-  // Kochi Metro Rail Phase 1 Line (Teal dashed line like Picture 2)
-  L.polyline(METRO_RAIL_LINE, {
-    color: '#009999',
-    weight: 8,
-    opacity: 0.35,
-    lineCap: 'round'
-  }).addTo(metroRailLayerGroup);
-
-  L.polyline(METRO_RAIL_LINE, {
-    color: '#009999',
-    weight: 5,
-    opacity: 0.95,
-    dashArray: '10, 8',
-    lineCap: 'round'
-  }).addTo(metroRailLayerGroup);
-
-  // Phase 2 Pink Line (Magenta / Pink dashed line towards InfoPark Kakkanad)
-  L.polyline(PHASE2_PINK_LINE, {
-    color: '#ec4899',
-    weight: 7,
-    opacity: 0.35,
-    lineCap: 'round'
-  }).addTo(phase2LayerGroup);
-
-  L.polyline(PHASE2_PINK_LINE, {
-    color: '#ec4899',
-    weight: 4.5,
-    opacity: 0.95,
-    dashArray: '6, 6',
-    lineCap: 'round'
-  }).addTo(phase2LayerGroup);
 }
 
 function renderStationPins(onStationSelectForPlanner) {
-  STATIONS.forEach(station => {
-    let iconHtml = '';
+  waterMetroLayerGroup.clearLayers();
 
-    if (station.type === 'water-metro') {
-      iconHtml = `
-        <div class="custom-station-pin" title="${station.name} (${station.mlName})">
-          <div class="pin-inner-boat">⚓</div>
-        </div>
-      `;
-    } else if (station.type === 'metro-rail') {
-      iconHtml = `
-        <div class="custom-station-pin" title="${station.name} (${station.mlName})">
-          <div class="pin-inner-metro"></div>
-        </div>
-      `;
-    } else {
-      iconHtml = `
-        <div class="custom-station-pin" title="${station.name} (${station.mlName})">
-          <div class="pin-inner-pink"></div>
-        </div>
-      `;
-    }
+  STATIONS.forEach(station => {
+    const iconHtml = `
+      <div class="custom-station-pin" title="${station.name} (${station.mlName}) - Water Metro Terminal">
+        <div class="pin-inner-boat">⚓</div>
+      </div>
+    `;
 
     const customIcon = L.divIcon({
       html: iconHtml,
       className: 'station-div-icon',
-      iconSize: [28, 28],
-      iconAnchor: [14, 14]
+      iconSize: [30, 30],
+      iconAnchor: [15, 15]
     });
 
     const marker = L.marker([station.lat, station.lng], { icon: customIcon });
+    marker.addTo(waterMetroLayerGroup);
 
-    // Target layer group based on type
-    if (station.type === 'water-metro') {
-      marker.addTo(waterMetroLayerGroup);
-    } else if (station.type === 'metro-rail') {
-      marker.addTo(metroRailLayerGroup);
-    } else {
-      marker.addTo(phase2LayerGroup);
-    }
-
-    // Hover or Click selects the station!
     marker.on('click', () => {
       selectStation(station, onStationSelectForPlanner, true);
     });
@@ -233,6 +189,208 @@ function renderStationPins(onStationSelectForPlanner) {
     });
 
     stationMarkers[station.id] = marker;
+  });
+}
+
+/**
+ * Live Animated Electric Catamaran Cruise Simulation
+ */
+function setupLiveBoatCruiser() {
+  if (!mapInstance) return;
+
+  const boatIcon = L.divIcon({
+    html: `
+      <div class="animated-cruising-boat">
+        <div class="boat-wake-ripple"></div>
+        <div class="boat-icon-badge" title="Electric Hybrid Catamaran Muziris-01">⛴️</div>
+      </div>
+    `,
+    className: 'boat-marker-div',
+    iconSize: [36, 36],
+    iconAnchor: [18, 18]
+  });
+
+  const startPt = BOAT_CRUISE_WAYPOINTS[0];
+  activeBoatMarker = L.marker(startPt, { icon: boatIcon, zIndexOffset: 1500 });
+  activeBoatMarker.addTo(liveVesselLayerGroup);
+
+  activeBoatMarker.bindTooltip(`
+    <div style="font-size:0.82rem; line-height:1.4; padding:2px 4px;">
+      <strong style="color:#009999;">⚡ Muziris-01 (Cruising)</strong><br/>
+      Route: High Court ➔ Vypin ➔ Fort Kochi<br/>
+      Speed: <strong>8.2 knots</strong> | Battery: <strong>94% (Electric)</strong>
+    </div>
+  `, { direction: 'top', offset: [0, -14] });
+
+  let waypointIndex = 0;
+  let t = 0;
+
+  if (boatAnimationInterval) clearInterval(boatAnimationInterval);
+
+  boatAnimationInterval = setInterval(() => {
+    t += 0.015;
+    if (t >= 1) {
+      t = 0;
+      waypointIndex = (waypointIndex + 1) % (BOAT_CRUISE_WAYPOINTS.length - 1);
+    }
+
+    const p1 = BOAT_CRUISE_WAYPOINTS[waypointIndex];
+    const p2 = BOAT_CRUISE_WAYPOINTS[waypointIndex + 1];
+
+    const currentLat = p1[0] + (p2[0] - p1[0]) * t;
+    const currentLng = p1[1] + (p2[1] - p1[1]) * t;
+
+    activeBoatMarker.setLatLng([currentLat, currentLng]);
+  }, 100);
+}
+
+/**
+ * Setup Live Departure Seconds Countdown & Dynamic Navigation Track Bar
+ */
+function setupDepartureCountdown() {
+  if (departureTimerInterval) clearInterval(departureTimerInterval);
+
+  const countdownEl = document.getElementById('countdown-val');
+  const trackBarFill = document.getElementById('track-bar-fill');
+  const trackVesselDot = document.getElementById('track-vessel-dot');
+  const trackStatus = document.getElementById('track-transit-status');
+
+  departureTimerInterval = setInterval(() => {
+    departureSecondsRemaining--;
+    if (departureSecondsRemaining <= 0) {
+      departureSecondsRemaining = 900; // Reset to 15 minutes
+    }
+
+    // 1. Digital Monospace Countdown
+    if (countdownEl) {
+      const mins = Math.floor(departureSecondsRemaining / 60);
+      const secs = departureSecondsRemaining % 60;
+      countdownEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    // 2. Animated Vessel Route Track Progress
+    const totalDuration = 900;
+    const progressPercent = Math.min(94, Math.max(6, ((totalDuration - departureSecondsRemaining) / totalDuration) * 100));
+
+    if (trackBarFill) {
+      trackBarFill.style.width = `${progressPercent}%`;
+    }
+    if (trackVesselDot) {
+      trackVesselDot.style.left = `${progressPercent}%`;
+    }
+
+    // 3. Dynamic Vessel Status
+    if (trackStatus) {
+      if (departureSecondsRemaining <= 60) {
+        trackStatus.textContent = 'Arriving Pier 1';
+        trackStatus.style.color = '#4ade80';
+      } else {
+        trackStatus.textContent = 'Cruising at 8.4 kts';
+        trackStatus.style.color = '#38bdf8';
+      }
+    }
+  }, 1000);
+}
+
+/**
+ * Setup Audio Chime & Announcement Toast Notification
+ */
+function setupPierChimeAudio() {
+  const chimeBtn = document.getElementById('btn-pier-chime');
+  const toastBox = document.getElementById('departure-announcement-toast');
+  const toastText = document.getElementById('toast-announcement-text');
+
+  if (!chimeBtn) return;
+
+  chimeBtn.addEventListener('click', () => {
+    // 1. Play Soft Pleasant Nautical Dual Chime via Web Audio API
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const now = audioCtx.currentTime;
+
+      // Primary tone (C5)
+      const osc1 = audioCtx.createOscillator();
+      const gain1 = audioCtx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(523.25, now);
+      gain1.gain.setValueAtTime(0, now);
+      gain1.gain.linearRampToValueAtTime(0.25, now + 0.04);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
+      osc1.connect(gain1);
+      gain1.connect(audioCtx.destination);
+      osc1.start(now);
+      osc1.stop(now + 1.1);
+
+      // Harmony tone (G5)
+      const osc2 = audioCtx.createOscillator();
+      const gain2 = audioCtx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(783.99, now + 0.3);
+      gain2.gain.setValueAtTime(0, now + 0.3);
+      gain2.gain.linearRampToValueAtTime(0.22, now + 0.34);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 1.6);
+      osc2.connect(gain2);
+      gain2.connect(audioCtx.destination);
+      osc2.start(now + 0.3);
+      osc2.stop(now + 1.6);
+    } catch (e) {
+      console.log('AudioContext not available:', e);
+    }
+
+    // 2. Button Visual Animation
+    chimeBtn.classList.add('chiming');
+    setTimeout(() => chimeBtn.classList.remove('chiming'), 500);
+
+    // 3. Display Live Announcement Toast
+    if (toastBox && toastText && currentSelectedStation) {
+      const targetDest = currentSelectedStation.connections && currentSelectedStation.connections.length > 0
+        ? (STATIONS.find(s => s.id === currentSelectedStation.connections[0])?.name || 'Vypin')
+        : 'Next Destination';
+
+      toastText.textContent = `Attention: KWML Muziris-01 now boarding at Pier Gate 1 for ${targetDest}. Please tap your Kochi1 Card.`;
+      toastBox.style.display = 'flex';
+
+      setTimeout(() => {
+        toastBox.style.display = 'none';
+      }, 5000);
+    }
+  });
+}
+
+/**
+ * Map Controls (Basemap switcher, Network Filter, Recenter)
+ */
+function setupMapControls() {
+  // 1. Map Basemap Style Switcher
+  document.querySelectorAll('.map-style-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const styleKey = btn.getAttribute('data-map-style');
+      if (BASEMAP_TILES[styleKey] && mapInstance) {
+        if (currentTileLayer) {
+          mapInstance.removeLayer(currentTileLayer);
+        }
+        currentTileLayer = L.tileLayer(BASEMAP_TILES[styleKey], {
+          maxZoom: 19,
+          subdomains: ['server']
+        }).addTo(mapInstance);
+
+        document.querySelectorAll('.map-style-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+    });
+  });
+
+  // 2. Recenter Map on Kochi Waters
+  document.getElementById('btn-recenter-map')?.addEventListener('click', () => {
+    if (mapInstance) {
+      mapInstance.flyTo([9.985, 76.265], 13, { duration: 0.8 });
+    }
+  });
+
+  // 3. Network Filter Dropdown
+  const filterSelect = document.getElementById('map-network-filter');
+  filterSelect?.addEventListener('change', (e) => {
+    filterNetworkLayers(e.target.value);
   });
 }
 
@@ -253,125 +411,171 @@ export function selectStation(station, onStationSelectForPlanner, panToMarker = 
     marker.getElement().querySelector('.custom-station-pin')?.classList.add('pin-active');
   }
 
-  // Update Station Details Card (Right column, exact design from Picture 2)
+  // Update Station Details Card (Image 1 layout)
   renderStationCard(station, onStationSelectForPlanner);
 
-  // Update active chip below map
-  document.querySelectorAll('.network-chip').forEach(chip => {
-    if (chip.getAttribute('data-station-id') === station.id) {
-      chip.classList.add('active');
+  // Update active pill in horizontal chips deck (Images 2 & 3 layout)
+  document.querySelectorAll('.station-chip-pill').forEach(pill => {
+    if (pill.getAttribute('data-station-id') === station.id) {
+      pill.classList.add('active');
+      pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
     } else {
-      chip.classList.remove('active');
+      pill.classList.remove('active');
     }
   });
 }
 
 function renderStationCard(station, onStationSelectForPlanner) {
-  const bannerEl = document.getElementById('station-card-banner');
-  const mlBannerText = document.getElementById('banner-ml-text');
-  const enBannerText = document.getElementById('banner-en-text');
-  const badgeText = document.getElementById('banner-badge-text');
-
+  // Elements
+  const bannerMl = document.getElementById('station-banner-ml');
+  const bannerEn = document.getElementById('station-banner-en');
   const mainName = document.getElementById('station-main-name');
   const subName = document.getElementById('station-sub-name');
   const timingsText = document.getElementById('station-timings-text');
   const nearbyText = document.getElementById('station-nearby-text');
-  const badgesContainer = document.getElementById('station-meta-badges');
-  const feederText = document.getElementById('station-feeder-text');
   const gmapsBtn = document.getElementById('btn-view-gmaps');
-  const planBtn = document.getElementById('btn-plan-from-station');
 
-  if (bannerEl) {
-    bannerEl.style.backgroundColor = station.bannerColor || '#a3e635';
-  }
-  if (mlBannerText) mlBannerText.textContent = station.mlName;
-  if (enBannerText) enBannerText.textContent = station.name;
-  if (badgeText) badgeText.textContent = station.badgeText || 'METRO';
+  // 1. Top Banner (Malayalam Left, English Right, Lime background)
+  if (bannerMl) bannerMl.textContent = station.mlName || 'ഹൈക്കോടതി';
+  if (bannerEn) bannerEn.textContent = station.name || 'High Court';
 
+  // 2. Station Heading & Malayalam Subtitle
   if (mainName) mainName.textContent = station.name;
   if (subName) subName.textContent = station.mlName;
-  if (timingsText) timingsText.textContent = station.timings || '06:00 AM - 10:30 PM';
-  if (nearbyText) nearbyText.textContent = station.nearby || station.description;
 
-  if (badgesContainer) {
-    badgesContainer.innerHTML = `
-      <span class="station-pill-badge highlight">⏱️ ${station.headway}</span>
-      <span class="station-pill-badge">🎫 Fare: ${station.fareEstimate || '₹20 - ₹40'}</span>
-      <span class="station-pill-badge">⚓ ${station.zone}</span>
-    `;
+  // 3. Info Row 1: Operating Timings
+  if (timingsText) {
+    timingsText.textContent = station.timings || '07:00 AM - 08:00 PM';
   }
 
-  if (feederText) {
-    feederText.innerHTML = `<strong>Feeder Integration:</strong> ${station.feeder || 'Direct walking access'}`;
+  // 4. Info Row 2: Nearby Landmarks
+  if (nearbyText) {
+    nearbyText.textContent = station.nearby || station.description || 'Waterfront Promenade';
   }
 
+  // 5. Full-width Google Maps Action Button
   if (gmapsBtn) {
-    gmapsBtn.href = station.mapsUrl || `https://maps.google.com/?q=${encodeURIComponent(station.name + ' Kochi')}`;
-  }
-
-  if (planBtn) {
-    planBtn.onclick = () => {
-      if (typeof onStationSelectForPlanner === 'function') {
-        onStationSelectForPlanner(station.id);
-      }
-    };
+    gmapsBtn.href = station.mapsUrl || `https://maps.google.com/?q=${encodeURIComponent(station.name + ' Water Metro Terminal Kochi')}`;
   }
 }
 
 function filterNetworkLayers(filterVal) {
   if (!mapInstance) return;
 
-  if (filterVal === 'all') {
-    mapInstance.addLayer(waterMetroLayerGroup);
-    mapInstance.addLayer(metroRailLayerGroup);
-    mapInstance.addLayer(phase2LayerGroup);
-  } else if (filterVal === 'water-metro') {
-    mapInstance.addLayer(waterMetroLayerGroup);
-    mapInstance.removeLayer(metroRailLayerGroup);
-    mapInstance.removeLayer(phase2LayerGroup);
-  } else if (filterVal === 'metro-rail') {
-    mapInstance.removeLayer(waterMetroLayerGroup);
-    mapInstance.addLayer(metroRailLayerGroup);
-    mapInstance.removeLayer(phase2LayerGroup);
-  } else if (filterVal === 'phase2') {
-    mapInstance.removeLayer(waterMetroLayerGroup);
-    mapInstance.removeLayer(metroRailLayerGroup);
-    mapInstance.addLayer(phase2LayerGroup);
+  const filteredStations = filterVal === 'all'
+    ? STATIONS
+    : STATIONS.filter(s => {
+        if (filterVal === 'central') return ['high-court', 'vytilla', 'willingdon-island', 'bolgatty'].includes(s.id);
+        if (filterVal === 'heritage') return ['fort-kochi', 'vypin', 'mattancherry', 'mulavukad-north'].includes(s.id);
+        if (filterVal === 'north') return ['south-chittoor', 'cheranalloor', 'eloor', 'kakkanad', 'kadamakkudy'].includes(s.id);
+        return true;
+      });
+
+  // Fit bounds to filtered stations if specific category selected
+  if (filterVal !== 'all' && filteredStations.length > 0) {
+    const validMarkers = filteredStations.map(s => stationMarkers[s.id]).filter(Boolean);
+    if (validMarkers.length > 0) {
+      const group = L.featureGroup(validMarkers);
+      mapInstance.flyToBounds(group.getBounds(), { padding: [50, 50], maxZoom: 14, duration: 0.8 });
+    }
+  } else {
+    mapInstance.flyTo([9.985, 76.265], 13, { duration: 0.8 });
   }
+
+  // Filter the horizontal pill chips
+  renderHorizontalChips(filterVal);
 }
 
-function setupQuickChips(onStationSelectForPlanner) {
-  const chipsContainer = document.getElementById('network-quick-chips');
-  if (!chipsContainer) return;
+let onStationSelectGlobal = null;
 
-  const keyChips = [
-    { id: 'aluva', label: 'Aluva (Metro)', color: '#a3e635' },
-    { id: 'high-court', label: 'High Court (Water Metro)', color: '#009999' },
-    { id: 'vytilla', label: 'Vyttila Mobility Hub', color: '#0284c7' },
-    { id: 'fort-kochi', label: 'Fort Kochi Heritage', color: '#059669' },
-    { id: 'kakkanad-infopark', label: 'InfoPark (Phase 2)', color: '#ec4899' },
-    { id: 'edapally', label: 'Edapally / LuLu Mall', color: '#8b5cf6' },
-    { id: 'vypin', label: 'Vypin Beach', color: '#0d9488' },
-    { id: 'mattancherry', label: 'Mattancherry Palace', color: '#d97706' },
-    { id: 'kadamakkudy', label: 'Kadamakkudy Eco', color: '#10b981' }
-  ];
+function renderHorizontalChips(filterCat = 'all') {
+  const container = document.getElementById('network-chips-scroll');
+  if (!container) return;
 
-  chipsContainer.innerHTML = keyChips.map(chip => `
-    <button class="network-chip ${chip.id === 'aluva' ? 'active' : ''}" data-station-id="${chip.id}">
-      <span class="chip-dot" style="color:${chip.color};"></span>
-      <span>${chip.label}</span>
+  const filtered = filterCat === 'all'
+    ? STATIONS
+    : STATIONS.filter(s => {
+        if (filterCat === 'central') return ['high-court', 'vytilla', 'willingdon-island', 'bolgatty'].includes(s.id);
+        if (filterCat === 'heritage') return ['fort-kochi', 'vypin', 'mattancherry', 'mulavukad-north'].includes(s.id);
+        if (filterCat === 'north') return ['south-chittoor', 'cheranalloor', 'eloor', 'kakkanad', 'kadamakkudy'].includes(s.id);
+        return true;
+      });
+
+  container.innerHTML = filtered.map(st => `
+    <button class="station-chip-pill ${currentSelectedStation?.id === st.id ? 'active' : ''}" data-station-id="${st.id}" type="button">
+      ${st.name}
     </button>
   `).join('');
 
-  chipsContainer.querySelectorAll('.network-chip').forEach(btn => {
+  // Attach click listeners to pill chips
+  container.querySelectorAll('.station-chip-pill').forEach(btn => {
     btn.addEventListener('click', () => {
       const stationId = btn.getAttribute('data-station-id');
       const station = STATIONS.find(s => s.id === stationId);
       if (station) {
-        selectStation(station, onStationSelectForPlanner, true);
+        selectStation(station, onStationSelectGlobal, true);
       }
     });
   });
+
+  // Update scrollbar thumb after render
+  setTimeout(updateScrollThumb, 50);
+}
+
+function updateScrollThumb() {
+  const scrollContainer = document.getElementById('network-chips-scroll');
+  const trackBar = document.getElementById('chips-track-bar');
+  const thumb = document.getElementById('chips-track-thumb');
+  if (!scrollContainer || !trackBar || !thumb) return;
+
+  const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+  if (maxScroll > 0) {
+    const ratio = scrollContainer.scrollLeft / maxScroll;
+    const maxThumbTravel = trackBar.clientWidth - thumb.clientWidth;
+    thumb.style.transform = `translateX(${ratio * maxThumbTravel}px)`;
+  } else {
+    thumb.style.transform = 'translateX(0px)';
+  }
+}
+
+/**
+ * Setup Horizontal Quick Chips Bar (Images 2 & 3 Layout)
+ */
+function setupWaterMetroTerminalsDeck(onStationSelectForPlanner) {
+  onStationSelectGlobal = onStationSelectForPlanner;
+  const scrollContainer = document.getElementById('network-chips-scroll');
+  const leftBtn = document.getElementById('chips-scroll-left');
+  const rightBtn = document.getElementById('chips-scroll-right');
+  const trackBar = document.getElementById('chips-track-bar');
+
+  // Initial render of all pills
+  renderHorizontalChips('all');
+
+  // Left and Right arrow navigation controls
+  leftBtn?.addEventListener('click', () => {
+    if (scrollContainer) {
+      scrollContainer.scrollBy({ left: -220, behavior: 'smooth' });
+    }
+  });
+
+  rightBtn?.addEventListener('click', () => {
+    if (scrollContainer) {
+      scrollContainer.scrollBy({ left: 220, behavior: 'smooth' });
+    }
+  });
+
+  // Track bar click to scrub
+  trackBar?.addEventListener('click', (e) => {
+    if (!scrollContainer) return;
+    const rect = trackBar.getBoundingClientRect();
+    const clickRatio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+    scrollContainer.scrollTo({ left: clickRatio * maxScroll, behavior: 'smooth' });
+  });
+
+  // Scroll listener to sync thumb
+  scrollContainer?.addEventListener('scroll', updateScrollThumb);
+  window.addEventListener('resize', updateScrollThumb);
 }
 
 export function highlightRouteOnMap(originId, destId) {
@@ -382,8 +586,12 @@ export function highlightRouteOnMap(originId, destId) {
     mapInstance.fitBounds([
       [fromStation.lat, fromStation.lng],
       [toStation.lat, toStation.lng]
-    ], { padding: [50, 50], maxZoom: 14 });
+    ], { padding: [60, 60], maxZoom: 14 });
 
     selectStation(fromStation, null, false);
+    setTimeout(() => {
+      if (mapInstance) mapInstance.invalidateSize();
+    }, 200);
   }
 }
+

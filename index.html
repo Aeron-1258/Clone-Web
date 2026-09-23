@@ -22,8 +22,9 @@
     href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;600;700;800&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap"
     rel="stylesheet" />
 
-  <!-- Preload First Hero Sequence Frame for Instant Sharp Paint -->
-  <link rel="preload" as="image" href="/images/herosection/ezgif-frame-001.webp" type="image/webp" fetchpriority="high" />
+  <!-- Preload Animation Frame for Instant Paint -->
+  <link rel="preload" as="image" href="/images/herosection/frame_001.jpg" fetchpriority="high" />
+  <link rel="preload" as="image" href="/assets/animation/frame_00000.jpg" fetchpriority="high" />
 
   <!-- Application Stylesheets -->
   <link rel="stylesheet" href="./src/css/tokens.css" />
@@ -31,6 +32,7 @@
   <link rel="stylesheet" href="./src/css/components.css" />
   <link rel="stylesheet" href="./src/css/transitions.css" />
   <link rel="stylesheet" href="./src/css/map.css" />
+  <link rel="stylesheet" href="./src/css/hero-scroll-2.css" />
   <link rel="stylesheet" href="./src/css/responsive.css" />
 </head>
 
@@ -78,7 +80,7 @@
       <!-- Navigation Menu (Exact items matching Image 2) -->
       <nav class="nav-center-wrap" aria-label="Main Navigation">
         <ul class="nav-menu">
-          <li><a href="#journey-planner" class="nav-link">Plan Your Journey</a></li>
+          <li><a href="#timetable-section" class="nav-link">Timetable & Fares</a></li>
           <li><a href="#news-announcements" class="nav-link">Media</a></li>
           <li><a href="#sustainability" class="nav-link">Sustainability</a></li>
           <li><a href="#integrated-network" class="nav-link">Business</a></li>
@@ -118,24 +120,22 @@
   </header>
 
   <!-- ====================================================
-       3. HERO SECTION WITH SCROLL SEQUENCE CANVAS
-       (Dynamic boat animation under public/images/herosection)
+       3. FIRST HERO SECTION (Scroll-Driven Frame Animation)
+       Cinema 85-frame canvas engine with sticky scroll timeline
        ==================================================== -->
-  <div class="hero-scroll-section" id="hero-scroll-section">
-    <section class="hero-sticky" id="home">
-      <!-- Full-screen Responsive Sequence Canvas (Native 3392x1912 backing store) -->
-      <canvas id="hero-frame-canvas" class="hero-frame-canvas" width="3392" height="1912" aria-label="Kochi Water Metro hybrid electric catamaran cruising on backwaters"></canvas>
+  <section class="hero-scroll-section" id="home" aria-label="Kochi Water Metro Hero Animation">
+    <div class="hero-sticky-viewport" id="hero-sticky-viewport">
+      <!-- High-Performance Full-Viewport Canvas Surface -->
+      <canvas id="hero-frame-canvas" class="hero-frame-canvas" aria-label="Kochi Water Metro hybrid electric catamaran cruising on backwaters"></canvas>
 
       <!-- Accessible SEO Heading for screen readers and search engines -->
       <h1 class="visually-hidden">Kochi Water Metro — Sail to a Greener Kochi</h1>
 
       <!-- Clickable Transparent Hotspots over animated controls -->
       <div class="hero-interactive-overlay">
-        <!-- Hotspot over 'Explore Routes' button -->
+        <!-- Hotspot over 'Explore Routes' button in frame -->
         <a href="#network-map" class="hero-explore-hotspot" aria-label="Explore Routes"></a>
       </div>
-
-
 
       <!-- Floating Minimal Scroll Prompt (Fades out when user scrubs) -->
       <div class="hero-scroll-prompt" id="hero-scroll-prompt" aria-hidden="true">
@@ -145,66 +145,32 @@
         </div>
         <span class="scroll-prompt-arrow">↓</span>
       </div>
-
-      <!-- Center Dipping Double Chevron Indicator directly above wave trough -->
-      <a href="#our-story" class="wave-chevron-down" aria-label="Scroll to Our Story">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5"
-          stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 7 12 13 18 7"></polyline>
-          <polyline points="6 12 12 18 18 12"></polyline>
-        </svg>
-      </a>
-
-      <!-- Multi-layer Flowing Water Wave Transition (Accurate SVG geometry) -->
-      <div class="hero-fluid-waves-wrapper">
-        <svg class="hero-waves-svg" viewBox="0 0 1440 180" fill="none" preserveAspectRatio="none">
-          <!-- Layer 1: Translucent Aqua/Cyan Wave Crest -->
-          <path d="M0,65 C240,120 440,20 720,80 C1000,140 1240,30 1440,70 L1440,180 L0,180 Z"
-            fill="rgba(202, 235, 255, 0.6)"></path>
-          <!-- Layer 2: Flowing White Wave base -->
-          <path d="M0,95 C260,35 500,165 720,100 C940,40 1200,145 1440,90 L1440,180 L0,180 Z" fill="#ffffff"></path>
-        </svg>
-      </div>
-    </section>
-  </div>
-
-  <!-- ====================================================
-       4. "OUR STORY" SECTION (From Reference Image)
-       ==================================================== -->
-  <section class="our-story-section" id="our-story">
-    <div class="story-container">
-      <div class="story-split-grid">
-
-        <div class="story-left-content">
-          <span class="story-badge">OUR STORY</span>
-          <h2 class="story-heading">
-            Connecting People,<br />
-            <span class="story-heading-cyan">Bringing Kochi Closer</span>
-          </h2>
-          <p class="story-desc">
-            Kochi Water Metro is more than just a mode of transport — it's a step towards a cleaner, greener and more
-            connected Kochi. Experience the city's beauty from a new perspective, across its iconic waterways.
-          </p>
-          <a href="#network-map" class="story-btn">
-            <span>Learn More</span>
-            <span class="story-arrow">→</span>
-          </a>
-        </div>
-
-        <div class="story-right-visual">
-          <div class="story-img-frame">
-            <img src="/assets/terminal-pontoon.jpg" alt="Kochi Water Metro Floating Terminal Pontoon" loading="lazy" />
-          </div>
-        </div>
-
-      </div>
     </div>
   </section>
 
   <!-- ====================================================
+       4. BLANK PAGE SECTION (Scroll-Driven Hero 2 Animation)
+       Connecting Kochi 100-frame sequence directly in existing section
+       ==================================================== -->
+  <section class="blank-page-section" id="blank-page" aria-label="Connecting Kochi Animation">
+    <div class="blank-page-sticky">
+      <div class="blank-page-stage">
+        <canvas id="animation-canvas" class="blank-page-canvas" aria-label="Connecting Kochi animation sequence"></canvas>
+        <div class="blank-page-interactive" aria-label="Quick Actions">
+          <button class="blank-action-btn btn-book-tickets" id="hero2-book-tickets-btn" type="button" aria-label="Book Tickets"></button>
+          <a href="#timetable-section" class="blank-action-btn btn-plan-journey" id="hero2-plan-journey-btn" aria-label="Timetable and Fares"></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Anchor for Navigation Links -->
+  <div id="our-story" style="position:relative; top:-60px;"></div>
+
+  <!-- ====================================================
        5. KEY STATS STRIP
        ==================================================== -->
-  <section class="stats-strip-section">
+  <section class="stats-strip-section" id="stats-strip">
     <div class="container stats-grid">
       <div class="stat-item">
         <div class="stat-value">75+</div>
@@ -401,9 +367,14 @@
        7. EXPLORE THE NETWORK (Inspired by corporate.kochimetro.org)
        ==================================================== -->
   <section class="network-map-section" id="network-map">
-    <div class="container">
+    <!-- Subtle Background World Map Watermark Overlay (matching user screenshot) -->
+    <div class="network-bg-watermark" aria-hidden="true">
+      <img src="/assets/world-map-watermark.svg" class="network-watermark-img" alt="" />
+    </div>
 
-      <!-- Section Heading -->
+    <div class="container network-container">
+
+      <!-- Section Heading (Classic Serif Typography from corporate.kochimetro.org) -->
       <div class="network-section-header">
         <h2 class="network-title">Explore the Network</h2>
         <p class="network-subtitle">
@@ -411,179 +382,114 @@
         </p>
       </div>
 
-      <!-- 2-Column Split: Map on Left (62%), Station Details Card on Right (38%) -->
+      <!-- 2-Column Split: Map on Left (60%), Station Details Card on Right (40%) -->
       <div class="network-split-layout">
 
-        <!-- Left: Interactive Leaflet Map with Network Filter Dropdown -->
+        <!-- Left: Interactive Leaflet Map Canvas with Floating Dropdown -->
         <div class="network-map-wrapper">
-          <!-- Floating Network Filter Dropdown -->
-          <div class="map-network-dropdown">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#009999" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;">
-              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-              <polyline points="2 17 12 22 22 17"></polyline>
-              <polyline points="2 12 12 17 22 12"></polyline>
-            </svg>
-            <select id="map-network-filter" class="map-network-select" aria-label="Filter transit networks">
-              <option value="all">All Transit Networks</option>
-              <option value="water-metro">Water Metro Only (15 Routes)</option>
-              <option value="metro-rail">Kochi Metro Rail (Phase 1)</option>
-              <option value="phase2">Phase 2 InfoPark Line</option>
-            </select>
+          <!-- Floating Pill Dropdown in Top Right (Image 1) -->
+          <div class="map-floating-pill-menu">
+            <div class="map-network-dropdown">
+              <svg class="dropdown-network-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#009999" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                <polyline points="2 17 12 22 22 17"></polyline>
+                <polyline points="2 12 12 17 22 12"></polyline>
+              </svg>
+              <select id="map-network-filter" class="map-network-select" aria-label="Filter Transit Networks">
+                <option value="all" selected>All Transit Networks</option>
+                <option value="central">Central &amp; Port Hubs</option>
+                <option value="heritage">Heritage &amp; Islands</option>
+                <option value="north">North Backwaters &amp; IT</option>
+              </select>
+              <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
           </div>
 
           <!-- Leaflet Canvas -->
           <div id="leaflet-map"></div>
         </div>
 
-        <!-- Right: Modern Station Details Card (Direct from Picture 2) -->
+        <!-- Right: Station Details Card (Exact match to Image 1) -->
         <div class="network-station-card" id="station-inspector-card">
 
-          <!-- Colored Themed Top Banner -->
-          <div class="station-card-banner" id="station-card-banner">
-            <span class="banner-ml-text" id="banner-ml-text">ആലുവ</span>
-
-            <div class="banner-logo-badge">
-              <svg viewBox="-258 191.7 441.7 178.3" xmlns="http://www.w3.org/2000/svg">
-                <path fill="#009999"
-                  d="M-170.9,315.8c-15.5,15.3-31,30.7-46.5,46c-6.5,6.5-14.1,9.2-23.2,6.8c-9.6-2.6-16.4-11.3-16.4-21.4c-0.1-44.1-0.1-88.2,0-132.4c0-12.6,10-22.2,22.8-22.2c12.5,0,22.3,9.4,22.4,22c0.1,23.5,0.1,47,0.1,70.5c0,1.8,0,3.5,0,6.5c2.1-1.9,3.4-2.9,4.5-4c28.7-28.9,57.6-57.7,86.5-86.6c11.4-11.3,24.2-11.4,35.5-0.2c15,14.9,29.9,29.9,44.9,44.8c1.2,1.2,2.5,2.1,3.8,3.1c10.6,10.6,21.1,21.2,31.7,31.8c9.7,9.8,19.3,19.7,29,29.5c6.6,6.6,13.2,13.1,19.8,19.7c9.5,9.5,10,23.4,1,32.6c-9.3,9.5-23.2,9.5-33-0.2c-14.8-14.7-29.5-29.4-44.2-44.1c-1.7-1.7-3.8-3.2-5.6-4.8c-2.6-2.9-5.1-6-7.9-8.7c-7.9-7.7-15.9-15.3-23.8-23c-6.1-6.3-12.1-12.6-18.2-19c-4.9-5.1-9.6-10.4-13.8-14.8c-10.5,10-20,19-29.5,28.1c-0.7,0.6-1.3,1.3-2,1.9c-2,2-4,4-6.1,6.1c-8.8,8.8-17.6,17.6-26.4,26.4c-1.1,1.1-2.2,2.2-3.3,3.2C-169.3,314.2-170.1,315-170.9,315.8z" />
-                <path fill="#ffffff"
-                  d="M-4.8,280.6c-10.6-10.6-21.1-21.2-31.7-31.8c16.9-17,33.7-34.1,50.9-50.8c7.9-7.7,21.7-7.1,30,1c21.1,20.8,42,41.8,63,62.7c22.7,22.7,45.5,45.4,68.2,68.1c6.9,6.8,9.3,15,6.4,24.2c-2.9,8.8-9.4,14.1-18.6,15.3c-8,1.1-14.5-2-20.2-7.7c-21-21.1-42.1-42.2-63.2-63.2c-15.8-15.8-31.6-31.5-47.4-47.2c-1.1-1.1-2.5-2.1-4-3.3C17.2,258.9,6.2,269.7-4.8,280.6z" />
-                <path fill="#ffffff"
-                  d="M-69.5,281.6c7.9,7.7,15.9,15.2,23.8,23c2.8,2.7,5.3,5.8,7.9,8.7C-49.2,324.9-60.6,336.5-72,348c-4.5,4.6-9.1,9.2-13.7,13.8c-10.1,10.2-23.7,10.3-34.1,0.3c-2.3-2.2-4.5-4.4-6.8-6.6c-1.1-1-2.2-2-3.3-3l-0.1,0.2l0.1-0.2c-1.7-1.7-3.3-3.3-5-5l-0.2,0.1l0.2-0.1c-1.4-1.5-2.9-3.1-4.3-4.6l-0.1-0.1c-2.9-2.8-5.8-5.5-8.6-8.3c-3.1-3.1-6.2-6.3-9.3-9.4c-1-1.1-2.1-2.2-3.1-3.3c-0.7-0.7-1.3-1.3-2-2c-0.1-0.7-0.3-1.4-0.4-2.1c8.9-9,17.9-17.9,26.8-26.9c0.6-0.6,1.3-1.2,1.9-1.8c0.4-0.4,0.8-0.8,1.2-1.3c0.3-0.1,0.5-0.2,0.7-0.5c0.7,0,1.3,0,2,0.1c8.9,9.1,17.8,18.2,27.6,28.2C-90.9,303.7-80.2,292.6-69.5,281.6z" />
-              </svg>
-              <span id="banner-badge-text">METRO</span>
-            </div>
-
-            <span class="banner-en-text" id="banner-en-text">Aluva</span>
-          </div>
-
-          <!-- Station Content Details -->
-          <div class="station-content-body">
-
-            <div class="station-title-row">
-              <h3 class="station-main-name" id="station-main-name">Aluva</h3>
-              <div class="station-sub-name" id="station-sub-name">ആലുവ</div>
-            </div>
-
-            <!-- Timings Row with Clock Icon -->
-            <div class="station-info-row">
-              <svg class="station-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-              </svg>
-              <div class="station-info-text">
-                <span id="station-timings-text">06:00 AM - 10:30 PM</span>
+          <!-- Top Banner: Lime-Chartreuse with Malayalam Left, KMRL Emblem Center, English Right -->
+          <div class="station-card-top-banner" id="station-card-top-banner">
+            <div class="banner-ml-text" id="station-banner-ml">ഹൈക്കോടതി</div>
+            <div class="banner-metro-emblem" id="station-banner-emblem" title="Kochi Metro &amp; Water Metro">
+              <div class="emblem-inner-box">
+                <svg viewBox="-258 191.7 441.7 178.3" xmlns="http://www.w3.org/2000/svg" class="emblem-svg">
+                  <path fill="#009999" d="M-170.9,315.8c-15.5,15.3-31,30.7-46.5,46c-6.5,6.5-14.1,9.2-23.2,6.8c-9.6-2.6-16.4-11.3-16.4-21.4c-0.1-44.1-0.1-88.2,0-132.4c0-12.6,10-22.2,22.8-22.2c12.5,0,22.3,9.4,22.4,22c0.1,23.5,0.1,47,0.1,70.5c0,1.8,0,3.5,0,6.5c2.1-1.9,3.4-2.9,4.5-4c28.7-28.9,57.6-57.7,86.5-86.6c11.4-11.3,24.2-11.4,35.5-0.2c15,14.9,29.9,29.9,44.9,44.8c1.2,1.2,2.5,2.1,3.8,3.1c10.6,10.6,21.1,21.2,31.7,31.8c9.7,9.8,19.3,19.7,29,29.5c6.6,6.6,13.2,13.1,19.8,19.7c9.5,9.5,10,23.4,1,32.6c-9.3,9.5-23.2,9.5-33-0.2c-14.8-14.7-29.5-29.4-44.2-44.1c-1.7-1.7-3.8-3.2-5.6-4.8c-2.6-2.9-5.1-6-7.9-8.7c-7.9-7.7-15.9-15.3-23.8-23c-6.1-6.3-12.1-12.6-18.2-19c-4.9-5.1-9.6-10.4-13.8-14.8c-10.5,10-20,19-29.5,28.1c-0.7,0.6-1.3,1.3-2,1.9c-2,2-4,4-6.1,6.1c-8.8,8.8-17.6,17.6-26.4,26.4c-1.1,1.1-2.2,2.2-3.3,3.2C-169.3,314.2-170.1,315-170.9,315.8z" />
+                  <path fill="#ffffff" d="M-4.8,280.6c-10.6-10.6-21.1-21.2-31.7-31.8c16.9-17,33.7-34.1,50.9-50.8c7.9-7.7,21.7-7.1,30,1c21.1,20.8,42,41.8,63,62.7c22.7,22.7,45.5,45.4,68.2,68.1c6.9,6.8,9.3,15,6.4,24.2c-2.9,8.8-9.4,14.1-18.6,15.3c-8,1.1-14.5-2-20.2-7.7c-21-21.1-42.1-42.2-63.2-63.2c-15.8-15.8-31.6-31.5-47.4-47.2c-1.1-1.1-2.5-2.1-4-3.3C17.2,258.9,6.2,269.7-4.8,280.6z" />
+                  <path fill="#ffffff" d="M-69.5,281.6c7.9,7.7,15.9,15.2,23.8,23c2.8,2.7,5.3,5.8,7.9,8.7C-49.2,324.9-60.6,336.5-72,348c-4.5,4.6-9.1,9.2-13.7,13.8c-10.1,10.2-23.7,10.3-34.1,0.3c-2.3-2.2-4.5-4.4-6.8-6.6c-1.1-1-2.2-2-3.3-3l-0.1,0.2l0.1-0.2c-1.7-1.7-3.3-3.3-5-5l-0.2,0.1l0.2-0.1c-1.4-1.5-2.9-3.1-4.3-4.6l-0.1-0.1c-2.9-2.8-5.8-5.5-8.6-8.3c-3.1-3.1-6.2-6.3-9.3-9.4c-1-1.1-2.1-2.2-3.1-3.3c-0.7-0.7-1.3-1.3-2-2c-0.1-0.7-0.3-1.4-0.4-2.1c8.9-9,17.9-17.9,26.8-26.9c0.6-0.6,1.3-1.2,1.9-1.8c0.4-0.4,0.8-0.8,1.2-1.3c0.3-0.1,0.5-0.2,0.7-0.5c0.7,0,1.3,0,2,0.1c8.9,9.1,17.8,18.2,27.6,28.2C-90.9,303.7-80.2,292.6-69.5,281.6z" />
+                </svg>
+                <span class="emblem-caption">METRO</span>
               </div>
             </div>
-
-            <!-- Nearby Landmarks with Compass Icon -->
-            <div class="station-info-row">
-              <svg class="station-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
-              </svg>
-              <div class="station-info-text">
-                <strong>Nearby:</strong> <span id="station-nearby-text">Periyar River Bank, Aluva KSRTC Bus Stand, Aluva
-                  Railway Station</span>
-              </div>
-            </div>
-
-            <!-- Multimodal Feeder Link -->
-            <div class="station-info-row" id="station-feeder-text" style="font-size:0.88rem; color:#64748b;">
-              <!-- Dynamically populated -->
-            </div>
-
-            <!-- Meta Badges (Headway, Fare, Zone) -->
-            <div class="station-meta-badges" id="station-meta-badges">
-              <!-- Dynamically populated -->
-            </div>
-
+            <div class="banner-en-text" id="station-banner-en">High Court</div>
           </div>
 
-          <!-- Card Actions (Dark View on Google Maps + Plan Route) -->
-          <div class="station-card-actions">
-            <a href="https://maps.google.com/?q=Aluva+Metro+Station" target="_blank" rel="noopener noreferrer"
-              class="btn-view-gmaps" id="btn-view-gmaps">
+          <!-- Station Main Heading & Malayalam Subtitle (Georgia Serif) -->
+          <div class="station-details-heading">
+            <h3 class="station-title-text" id="station-main-name">High Court</h3>
+            <div class="station-ml-subtext" id="station-sub-name">ഹൈക്കോടതി</div>
+          </div>
+
+          <!-- Info Row 1: Operating Timings with Cyan Outline Clock Icon -->
+          <div class="station-info-entry">
+            <svg class="station-entry-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#009999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span class="station-entry-val" id="station-timings-text">07:00 AM - 08:00 PM</span>
+          </div>
+
+          <!-- Info Row 2: Nearby Landmarks with Cyan Outline Compass Icon -->
+          <div class="station-info-entry">
+            <svg class="station-entry-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#009999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+            </svg>
+            <div class="station-entry-val">
+              <strong>Nearby:</strong> <span id="station-nearby-text">Kerala High Court, Marine Drive Promenade, Rainbow Bridge, Menaka Shopping Street</span>
+            </div>
+          </div>
+
+          <!-- Full-Width Action Button: View on Google Maps (Dark Navy) -->
+          <div class="station-action-bottom">
+            <a href="https://maps.google.com/?q=High+Court+Water+Metro+Terminal+Kochi" target="_blank" rel="noopener noreferrer" class="btn-view-google-maps" id="btn-view-gmaps">
               View on Google Maps
             </a>
-            <button class="btn-plan-from-station" id="btn-plan-from-station">
-              Plan Route From Here ➔
-            </button>
           </div>
 
         </div>
 
       </div>
 
-      <!-- Quick-Selection Category Chips Bar Below the Map -->
-      <div class="network-quick-chips-bar" id="network-quick-chips">
-        <!-- Rendered by map.js -->
+      <!-- Horizontal Quick Chips Deck matching Images 2 & 3 -->
+      <div class="network-chips-wrapper">
+        <div class="network-chips-scroll" id="network-chips-scroll">
+          <!-- Dynamically populated station pill chips -->
+        </div>
+        <div class="network-chips-scrollbar">
+          <button class="chips-scroll-arrow" id="chips-scroll-left" aria-label="Scroll stations left" type="button">
+            &#9664;
+          </button>
+          <div class="chips-track-bar" id="chips-track-bar">
+            <div class="chips-track-thumb" id="chips-track-thumb"></div>
+          </div>
+          <button class="chips-scroll-arrow" id="chips-scroll-right" aria-label="Scroll stations right" type="button">
+            &#9654;
+          </button>
+        </div>
       </div>
 
     </div>
   </section>
 
-  <!-- ====================================================
-       8. SMART JOURNEY & FARE PLANNER
-       ==================================================== -->
-  <section class="planner-section" id="journey-planner">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: 3rem;">
-        <span class="section-badge" data-i18n="plannerSection.badge">Trip Assistant</span>
-        <h2 class="section-title" data-i18n="plannerSection.title">Plan Your Water Voyage</h2>
-        <p class="section-subtitle" style="margin:0 auto;" data-i18n="plannerSection.subtitle">
-          Real-time headway, estimated voyage duration, distance, and distance-based fare (₹20 to ₹40).
-        </p>
-      </div>
 
-      <div class="planner-card-wrapper">
-        <!-- Input Form -->
-        <div class="planner-form-pane">
-          <div class="form-group">
-            <label class="form-label" for="planner-from-select">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <circle cx="12" cy="12" r="10" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-              <span data-i18n="plannerSection.fromLabel">Origin Terminal</span>
-            </label>
-            <select id="planner-from-select" class="form-select"></select>
-          </div>
 
-          <button id="planner-swap-btn" class="swap-stations-btn" title="Swap Origin and Destination">
-            ⇅
-          </button>
-
-          <div class="form-group">
-            <label class="form-label" for="planner-to-select">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
-              <span data-i18n="plannerSection.toLabel">Destination Terminal</span>
-            </label>
-            <select id="planner-to-select" class="form-select"></select>
-          </div>
-
-          <button id="planner-calc-btn" class="find-route-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <span data-i18n="plannerSection.calcBtn">Find Next Departures</span>
-          </button>
-        </div>
-
-        <!-- Output Result Display -->
-        <div class="planner-result-pane" id="planner-result-pane">
-          <!-- Dynamically populated by planner.js -->
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ====================================================
        9. SEARCHABLE TIMETABLE BOARD
@@ -649,29 +555,35 @@
   </section>
 
   <!-- ====================================================
-       11. 3D PERSPECTIVE EXPLORE KOCHI CAROUSEL
+       11. EXPLORE KOCHI HORIZONTAL DESTINATION CAROUSEL
        ==================================================== -->
-  <section class="explore-3d-section" id="explore-section">
-    <div class="container text-center">
-      <span class="section-badge" data-i18n="exploreSection.badge">Island Hopping Adventures</span>
-      <h2 class="section-title" data-i18n="exploreSection.title">Explore Kochi with Seamless Transit</h2>
-      <p class="section-subtitle" style="margin:0 auto;" data-i18n="exploreSection.subtitle">
-        Discover heritage spice streets, tranquil island archipelagos, ancient synagogues, and vibrant waterfronts
-        accessible right from our jetties.
-      </p>
-
-      <div class="explore-3d-gallery">
-        <!-- Rendered dynamically by explore-3d.js -->
+  <section class="explore-destination-section" id="explore-section">
+    <div class="explore-dest-container">
+      <div class="explore-dest-header">
+        <span class="section-badge" data-i18n="exploreSection.badge">Island Hopping Adventures</span>
+        <h2 class="explore-dest-title">
+          <span class="explore-dest-title-main">Explore Kochi</span>
+          <span class="explore-dest-title-sub">with Seamless Transit</span>
+        </h2>
+        <p class="explore-dest-description" data-i18n="exploreSection.subtitle">
+          Discover heritage spice streets, tranquil island archipelagos, ancient palaces, and vibrant waterfronts accessible right from our jetties.
+        </p>
       </div>
 
-      <div class="explore-nav-controls">
-        <button class="explore-ctrl-btn" id="explore-prev-btn" aria-label="Previous Attraction">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <div class="explore-carousel-viewport" id="explore-carousel-viewport">
+        <div class="explore-carousel-track" id="explore-carousel-track">
+          <!-- Populated dynamically by explore-carousel.js -->
+        </div>
+      </div>
+
+      <div class="explore-dest-nav-controls">
+        <button class="explore-dest-nav-btn" id="explore-dest-prev" aria-label="Previous Destinations">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>
-        <button class="explore-ctrl-btn" id="explore-next-btn" aria-label="Next Attraction">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <button class="explore-dest-nav-btn" id="explore-dest-next" aria-label="Next Destinations">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
@@ -1025,7 +937,6 @@
           <h4>Passenger Services</h4>
           <ul class="footer-links">
             <li><a href="#network-map">Interactive Route Map</a></li>
-            <li><a href="#journey-planner">Journey & Fare Planner</a></li>
             <li><a href="#timetable-section">Boat Timetable</a></li>
             <li><a href="#kochi1-section">Kochi1 Smart Card</a></li>
             <li><a href="#virtual-tour">360° Virtual Tour</a></li>
@@ -1079,6 +990,57 @@
       <div class="modal-content-inner" id="station-modal-content">
         <!-- Dynamically injected -->
       </div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       TICKET BOOKING MODAL (/book-tickets)
+       ==================================================== -->
+  <div id="ticket-booking-modal" class="booking-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
+    <div class="booking-modal-card">
+      <button class="booking-modal-close" id="booking-modal-close-btn" aria-label="Close booking modal" type="button">&times;</button>
+      
+      <span class="booking-badge">Official KWML Ticketing</span>
+      <h2 class="booking-title" id="booking-modal-title">Book Water Metro Tickets</h2>
+      <p class="booking-subtitle">Instant QR-pass confirmation with cashless digital ticketing.</p>
+
+      <form class="booking-form-grid" onsubmit="event.preventDefault();">
+        <div class="booking-field-group">
+          <label class="booking-label" for="booking-from-select">From Terminal</label>
+          <select id="booking-from-select" class="booking-select"></select>
+        </div>
+
+        <div class="booking-field-group">
+          <label class="booking-label" for="booking-to-select">To Terminal</label>
+          <select id="booking-to-select" class="booking-select"></select>
+        </div>
+
+        <div class="booking-field-group">
+          <label class="booking-label">Passengers</label>
+          <div class="passenger-stepper">
+            <button type="button" class="stepper-btn" id="passengers-decrement" aria-label="Decrease passengers">&minus;</button>
+            <span class="stepper-value" id="passenger-count-display">1</span>
+            <button type="button" class="stepper-btn" id="passengers-increment" aria-label="Increase passengers">&plus;</button>
+          </div>
+        </div>
+
+        <div class="booking-fare-summary">
+          <div>
+            <div class="fare-total-label">Estimated Fare Total</div>
+            <div style="font-size:0.8rem; color:#64748b;">Direct cashless QR tariff</div>
+          </div>
+          <div class="fare-total-amount" id="booking-total-fare">₹20</div>
+        </div>
+
+        <a href="https://wa.me/919188957488?text=Book%20Ticket" target="_blank" rel="noopener noreferrer" class="btn-proceed-whatsapp" id="btn-proceed-whatsapp">
+          <span>Book Instant WhatsApp Ticket</span>
+          <span>➔</span>
+        </a>
+
+        <div class="booking-perk-hint">
+          💳 Tap-and-go with <strong>Kochi1 Card</strong> at jetties for up to 33% monthly discount.
+        </div>
+      </form>
     </div>
   </div>
 
